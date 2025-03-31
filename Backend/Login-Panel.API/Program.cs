@@ -1,3 +1,5 @@
+using Scalar.AspNetCore;
+
 namespace Login_Panel.API;
 
 public class Program
@@ -18,12 +20,12 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+            app.MapScalarApiReference();
         }
 
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
 
         app.MapControllers();
 
