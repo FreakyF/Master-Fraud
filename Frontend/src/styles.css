@@ -4,3 +4,9 @@
   font-family: Quicksand;
   src: url(/Quicksand.ttf) format("truetype");
 }
+
+@layer base {
+  ::selection {
+    @apply bg-white/90 text-black;
+  }
+}
