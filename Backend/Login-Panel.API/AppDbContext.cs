@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
     public DbSet<Totp> Totps { get; set; }
     public DbSet<UserToken> UserTokens { get; set; }
     public DbSet<TotpToken> TotpTokens { get; set; }
+    public DbSet<HoneypotSalt> HoneypotSalts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
