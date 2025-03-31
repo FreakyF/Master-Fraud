@@ -1,0 +1,10 @@
+<div class="bg-gray-100/10 h-110 aspect-square flex flex-col items-center justify-center mb-21 border-[0.01rem] border-black/15 rounded-3xl backdrop-filter
+backdrop-blur-3xl shadow-xl shadow-black/25 saturate-120">
+  <p class="text-white/90 text-5xl mb-2">Vivaldi Bank</p>
+  <img ngSrc="/logo.png" alt="Vivaldi Bank Logo" class="w-24 h-24 mb-6" height="1024" width="1024"/>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form-text-input></form-text-input>
+    <form-password-input></form-password-input>
+    <form-button label="Login"></form-button>
+  </form>
+</div>
