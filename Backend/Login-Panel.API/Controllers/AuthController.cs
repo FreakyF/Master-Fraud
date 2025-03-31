@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OtpNet;
@@ -13,180 +14,154 @@ public class AuthController : ControllerBase
 {
     private readonly ILogger<AuthController> _logger;
 
-    const int targetMilliseconds = 100;
+    private const int TargetMilliseconds = 100;
 
     public AuthController(ILogger<AuthController> logger)
     {
         _logger = logger;
     }
 
-    [HttpPost("login", Name = "PostLogin")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+    private static async Task<IActionResult> FakeDelay(Func<IActionResult> func)
     {
-        await using var context = new AppDbContext();
         var stopwatch = Stopwatch.StartNew();
-        IActionResult response;
 
-        var user = await context.Users.SingleOrDefaultAsync(
-            u => u.Login == loginRequest.Login && u.Password.Secret == loginRequest.Password
-        );
+        var result = func();
 
-        if (user != null)
-        {
-            var totpToken = context.TotpTokens.Add(new TotpToken
-            {
-                Id = Guid.Empty,
-                User = user
-            });
-            await context.SaveChangesAsync();
-            response = Ok(new LoginResponse { TotpToken = totpToken.Entity.Id });
-        }
-        else
-        {
-            response = BadRequest();
-        }
-
-        var delay = targetMilliseconds - (int)stopwatch.ElapsedMilliseconds;
-
+        var delay = TargetMilliseconds - (int)stopwatch.ElapsedMilliseconds;
         if (delay > 0)
         {
             await Task.Delay(delay);
         }
 
-        return response;
+        return result;
+    }
+
+    [HttpPost("login", Name = "PostLogin")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+    {
+        return await FakeDelay(() => LoginHandler(loginRequest));
+    }
+
+    private IActionResult LoginHandler(LoginRequest loginRequest)
+    {
+        using var context = new AppDbContext();
+
+        var user = context.Users.SingleOrDefault(
+            u => u.Login == loginRequest.Login && u.Password.Secret == loginRequest.Password
+        );
+
+        if (user == null) return BadRequest();
+
+        var totpToken = context.TotpTokens.Add(new TotpToken
+        {
+            Id = Guid.Empty,
+            User = user
+        });
+
+        context.SaveChanges();
+
+        return Ok(new LoginResponse { TotpToken = totpToken.Entity.Id });
     }
 
     [HttpPost("totp", Name = "PostTotp")]
     public async Task<IActionResult> Totp([FromBody] TotpRequest totpRequest)
     {
-        await using var context = new AppDbContext();
-        var stopwatch = Stopwatch.StartNew();
-        IActionResult response;
+        return await FakeDelay(() => TotpHandler(totpRequest));
+    }
 
-        var totpToken = await context.TotpTokens
+    private IActionResult TotpHandler(TotpRequest totpRequest)
+    {
+        using var context = new AppDbContext();
+
+        var totpToken = context.TotpTokens
             .Include(totpTokens => totpTokens.User)
             .ThenInclude(user => user.Totp)
-            .SingleOrDefaultAsync(
+            .SingleOrDefault(
                 t => t.Id == totpRequest.TotpToken
             );
 
-        if (totpToken != null)
-        {
-            var totp = new OtpNet.Totp(totpToken.User.Totp.Secret);
-            var isValid = totp.VerifyTotp(totpRequest.Secret, out _);
-            if (isValid)
-            {
-                var token = context.UserTokens.Add(new UserToken
-                {
-                    Id = Guid.Empty,
-                    User = totpToken.User
-                });
-                await context.SaveChangesAsync();
-                response = Ok(new TotpResponse
-                {
-                    Token = token.Entity.Id
-                });
-            }
-            else
-            {
-                response = BadRequest();
-            }
-        }
-        else
-        {
-            response = BadRequest();
-        }
+        if (totpToken == null) return BadRequest();
 
-        var delay = targetMilliseconds - (int)stopwatch.ElapsedMilliseconds;
+        var totp = new OtpNet.Totp(totpToken.User.Totp.Secret);
+        var isValid = totp.VerifyTotp(totpRequest.Secret, out _);
 
-        if (delay > 0)
+        if (!isValid) return BadRequest();
+
+        var token = context.UserTokens.Add(new UserToken
         {
-            await Task.Delay(delay);
-        }
+            Id = Guid.Empty,
+            User = totpToken.User
+        });
 
-        return response;
+        context.SaveChanges();
+
+        return Ok(new TotpResponse
+        {
+            Token = token.Entity.Id
+        });
     }
 
     [HttpPost("logout", Name = "PostLogout")]
     public async Task<IActionResult> Logout([FromBody] LogoutRequest logoutRequest)
     {
-        await using var context = new AppDbContext();
-        var stopwatch = Stopwatch.StartNew();
-        IActionResult response;
+        return await FakeDelay(() => LogoutHandler(logoutRequest));
+    }
 
-        if (Guid.TryParse(logoutRequest.Token, out var token))
-        {
-            var userToken = await context.UserTokens.SingleOrDefaultAsync(t => t.Id == token);
+    private IActionResult LogoutHandler(LogoutRequest logoutRequest)
+    {
+        using var context = new AppDbContext();
 
-            if (userToken != null)
-            {
-                response = Ok();
-                context.UserTokens.Remove(userToken);
-                await context.SaveChangesAsync();
-            }
-            else
-            {
-                response = BadRequest();
-            }
-        }
-        else
-        {
-            response = BadRequest();
-        }
+        if (!Guid.TryParse(logoutRequest.Token, out var token)) return BadRequest();
 
-        var delay = targetMilliseconds - (int)stopwatch.ElapsedMilliseconds;
+        var userToken = context.UserTokens.SingleOrDefault(t => t.Id == token);
 
-        if (delay > 0)
-        {
-            await Task.Delay(delay);
-        }
+        if (userToken == null) return BadRequest();
 
-        return response;
+        context.UserTokens.Remove(userToken);
+        context.SaveChangesAsync();
+
+        return Ok();
     }
 
     [HttpPost("salt", Name = "PostSalt")]
     public async Task<IActionResult> Salt([FromBody] SaltRequest saltRequest)
     {
-        await using var context = new AppDbContext();
-        var stopwatch = Stopwatch.StartNew();
-        IActionResult response;
+        return await FakeDelay(() => SaltHandler(saltRequest));
+    }
+
+    private IActionResult SaltHandler(SaltRequest saltRequest)
+    {
+        using var context = new AppDbContext();
+
         var randomSalt = RandomNumberGenerator.GetBytes(16);
 
-        var user = await context.Users.Include(user => user.Password).SingleOrDefaultAsync(
+        var user = context.Users.Include(user => user.Password).SingleOrDefault(
             u => u.Login == saltRequest.User
         );
 
         if (user != null)
         {
-            response = Ok(new SlatResponse
+            return Ok(new SlatResponse
             {
                 Salt = user.Password.Salt
             });
         }
-        else
+
+        return Ok(new SlatResponse
         {
-            response = Ok(new SlatResponse
-            {
-                Salt = Convert.ToBase64String(randomSalt)
-            });
-        }
-
-        var delay = targetMilliseconds - (int)stopwatch.ElapsedMilliseconds;
-
-        if (delay > 0)
-        {
-            await Task.Delay(delay);
-        }
-
-        return response;
+            Salt = Convert.ToBase64String(randomSalt)
+        });
     }
 
     [HttpPost("register", Name = "PostRegister")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
     {
-        await using var context = new AppDbContext();
-        var stopwatch = Stopwatch.StartNew();
-        IActionResult response;
+        return await FakeDelay(() => RegisterHandler(registerRequest));
+    }
+
+    private IActionResult RegisterHandler(RegisterRequest registerRequest)
+    {
+        using var context = new AppDbContext();
 
         var password = context.Passwords.Add(new Password
         {
@@ -212,21 +187,12 @@ public class AuthController : ControllerBase
             Totp = totp.Entity
         });
 
-        response = Ok(new RegisterResponse
+        context.SaveChangesAsync();
+
+        return Ok(new RegisterResponse
         {
             Secret =
                 $"otpauth://totp/Panel:{user.Entity.Login}?secret={Base32Encoding.ToString(totp.Entity.Secret)}&issuer=Panel"
         });
-
-        await context.SaveChangesAsync();
-
-        var delay = targetMilliseconds - (int)stopwatch.ElapsedMilliseconds;
-
-        if (delay > 0)
-        {
-            await Task.Delay(delay);
-        }
-
-        return response;
     }
 }
