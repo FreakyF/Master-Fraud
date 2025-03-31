@@ -50,7 +50,7 @@ public class AuthController : ControllerBase
             u => u.Login == loginRequest.Login && u.Password.Secret == loginRequest.Password
         );
 
-        if (user == null) return BadRequest();
+        // if (user == null) return BadRequest();
 
         var totpToken = context.TotpTokens.Add(new TotpToken
         {
@@ -81,6 +81,7 @@ public class AuthController : ControllerBase
             );
 
         if (totpToken == null) return BadRequest();
+        if (totpToken.User == null) return BadRequest();
 
         var totp = new OtpNet.Totp(totpToken.User.Totp.Secret);
         var isValid = totp.VerifyTotp(totpRequest.Secret, out _);
