@@ -50,8 +50,6 @@ public class AuthController : ControllerBase
             u => u.Login == loginRequest.Login && u.Password.Secret == loginRequest.Password
         );
 
-        // if (user == null) return BadRequest();
-
         var totpToken = context.TotpTokens.Add(new TotpToken
         {
             Id = Guid.Empty,
@@ -134,9 +132,13 @@ public class AuthController : ControllerBase
     {
         using var context = new AppDbContext();
 
-        var randomSalt = RandomNumberGenerator.GetBytes(16);
+        var randomSalt = BCrypt.Net.BCrypt.GenerateSalt(10);
 
         var user = context.Users.Include(user => user.Password).SingleOrDefault(
+            u => u.Login == saltRequest.User
+        );
+
+        var honeypotSalt = context.HoneypotSalts.SingleOrDefault(
             u => u.Login == saltRequest.User
         );
 
@@ -148,9 +150,26 @@ public class AuthController : ControllerBase
             });
         }
 
+        if (honeypotSalt != null)
+        {
+            return Ok(new SlatResponse
+            {
+                Salt = honeypotSalt.Salt
+            });
+        }
+
+        var newHoneypotSalt = context.HoneypotSalts.Add(new HoneypotSalt
+        {
+            Id = Guid.Empty,
+            Login = saltRequest.User,
+            Salt = randomSalt
+        });
+
+        context.SaveChanges();
+
         return Ok(new SlatResponse
         {
-            Salt = Convert.ToBase64String(randomSalt)
+            Salt = newHoneypotSalt.Entity.Salt
         });
     }
 
