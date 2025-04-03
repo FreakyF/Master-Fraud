@@ -1,0 +1,31 @@
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Login_Panel.Domain.Features.Authentication.Services;
+
+public class DelayService : IDelayService
+{
+    private const int TargetMilliseconds = 100;
+
+    private readonly ILogger<DelayService> _logger;
+
+    public DelayService(ILogger<DelayService> logger)
+    {
+        _logger = logger;
+    }
+
+    public async Task<IActionResult> FakeDelay(Func<IActionResult> func)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        var result = func();
+
+        var delay = TargetMilliseconds - (int)stopwatch.ElapsedMilliseconds;
+        if (delay > 0)
+        {
+            await Task.Delay(delay);
+        }
+
+        return result;
+    }
+}

@@ -20,4 +20,8 @@
         <PackageReference Include="Scalar.AspNetCore" Version="2.1.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Login-Panel.Infrastructure\Login-Panel.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>

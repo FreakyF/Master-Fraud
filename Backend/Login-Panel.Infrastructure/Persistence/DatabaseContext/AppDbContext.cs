@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Login_Panel.API;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions dbContextOptions) : DbContext(dbContextOptions), IAppDbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Password> Passwords { get; set; }
