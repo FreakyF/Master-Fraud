@@ -1,6 +1,11 @@
 import {Component, Input} from '@angular/core';
 import {NgIcon, provideIcons} from '@ng-icons/core';
-import {phosphorUser} from '@ng-icons/phosphor-icons/regular';
+import {
+  phosphorAt,
+  phosphorEnvelopeSimple,
+  phosphorIdentificationCard,
+  phosphorUser
+} from '@ng-icons/phosphor-icons/regular';
 import {ControlContainer, FormGroupDirective} from '@angular/forms';
 import {AutocompleteType} from '../types/autocomplete-type';
 
@@ -9,7 +14,7 @@ import {AutocompleteType} from '../types/autocomplete-type';
   imports: [
     NgIcon
   ],
-  viewProviders: [provideIcons({phosphorUser}), {
+  viewProviders: [provideIcons({phosphorUser, phosphorIdentificationCard, phosphorAt, phosphorEnvelopeSimple}), {
     provide: ControlContainer,
     useExisting: FormGroupDirective
   }],
