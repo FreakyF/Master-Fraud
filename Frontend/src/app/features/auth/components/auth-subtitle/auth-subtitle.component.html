@@ -1,0 +1,8 @@
+<div class="flex flex-col items-center justify-center">
+  <ng-container *ngIf="mode === AuthMode.LOGIN">
+    <p class="text-xl text-white/90">Please log in</p>
+  </ng-container>
+  <ng-container *ngIf="mode === AuthMode.REGISTER">
+    <p class="text-xl text-white/90">Please register</p>
+  </ng-container>
+</div>
