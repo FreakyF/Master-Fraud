@@ -3,8 +3,8 @@ import {LoginCardComponent} from './features/auth/components/login-card/login-ca
 import {RegisterCardComponent} from './features/auth/components/register-card/register-card.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginCardComponent },
-  { path: 'register', component: RegisterCardComponent },
-  { path: '**', redirectTo: 'login' }
+  {path: '', redirectTo: 'login', pathMatch: 'full', title: 'Login'},
+  {path: 'login', component: LoginCardComponent, title: 'Login'},
+  {path: 'register', component: RegisterCardComponent, title: 'Register'},
+  {path: '**', redirectTo: 'login', title: 'Login'}
 ];
