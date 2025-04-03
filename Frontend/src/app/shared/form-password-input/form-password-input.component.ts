@@ -1,7 +1,13 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NgIcon, provideIcons} from '@ng-icons/core';
 import {phosphorEye, phosphorEyeSlash, phosphorLock} from '@ng-icons/phosphor-icons/regular';
 import {ControlContainer, FormGroupDirective} from '@angular/forms';
+import {AutocompleteType} from '../types/autocomplete-type';
+
+export type PasswordAutocompleteType =
+  AutocompleteType.CURRENT_PASSWORD
+  | AutocompleteType.NEW_PASSWORD
+  | AutocompleteType.OFF;
 
 @Component({
   selector: 'form-password-input',
@@ -16,9 +22,13 @@ import {ControlContainer, FormGroupDirective} from '@angular/forms';
   styleUrl: './form-password-input.component.css'
 })
 export class FormPasswordInputComponent {
-  showPassword: boolean = false;
+  @Input() autocomplete: PasswordAutocompleteType = AutocompleteType.OFF;
 
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+  public isPasswordVisible: boolean = false;
+
+  public togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
+
+  protected readonly AutocompleteType = AutocompleteType;
 }

@@ -1,0 +1,10 @@
+<div class="flex flex-col items-center justify-center mb-1">
+  <ng-container *ngIf="mode === 'login'">
+    <p class="text-white/90">Are you a new user?</p>
+    <p class="text-white/90 underline">Create a new account</p>
+  </ng-container>
+  <ng-container *ngIf="mode === 'register'">
+    <p class="text-white/90">Already have an account?</p>
+    <p class="text-white/90 underline">Log in</p>
+  </ng-container>
+</div>

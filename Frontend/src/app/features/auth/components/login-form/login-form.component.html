@@ -1,0 +1,18 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <div class="flex flex-col gap-3">
+    <form-text-input
+      icon="phosphorUser"
+      placeholder="Username"
+      id="username"
+      ariaLabel="Username"
+      [autocomplete]="AutocompleteType.NICKNAME">
+    </form-text-input>
+    <form-password-input></form-password-input>
+  </div>
+
+  <status-message/>
+
+  <div class="mt-3">
+    <form-button label="Login"></form-button>
+  </div>
+</form>
