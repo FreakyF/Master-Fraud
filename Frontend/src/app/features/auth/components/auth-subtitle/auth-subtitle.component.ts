@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {NgIf} from '@angular/common';
+import {AuthMode} from '../types/auth-mode';
 
 @Component({
   selector: 'auth-subtitle',
@@ -10,5 +11,6 @@ import {NgIf} from '@angular/common';
   styleUrl: './auth-subtitle.component.css'
 })
 export class AuthSubtitleComponent {
-  @Input() mode: 'login' | 'register' = 'login';
+  @Input({required: true}) mode!: AuthMode;
+  protected readonly AuthMode = AuthMode;
 }

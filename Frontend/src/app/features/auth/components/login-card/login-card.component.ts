@@ -1,23 +1,25 @@
 import {Component} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {LoginFormComponent} from "../login-form/login-form.component";
 import {AuthCtaComponent} from "../auth-cta/auth-cta.component";
 import {AuthHeaderComponent} from "../auth-header/auth-header.component";
 import {AuthSubtitleComponent} from "../auth-subtitle/auth-subtitle.component";
+import {RegisterFormComponent} from '../register-form/register-form.component';
+import {LoginFormComponent} from '../login-form/login-form.component';
+import {AuthMode} from '../types/auth-mode';
 
 @Component({
     selector: 'login-card',
-    imports: [
-        ReactiveFormsModule,
-        AuthCtaComponent,
-        LoginFormComponent,
-        LoginFormComponent,
-        AuthCtaComponent,
-        AuthHeaderComponent,
-        AuthSubtitleComponent,
-    ],
+  imports: [
+    ReactiveFormsModule,
+    AuthCtaComponent,
+    AuthCtaComponent,
+    AuthHeaderComponent,
+    AuthSubtitleComponent,
+    LoginFormComponent,
+  ],
     templateUrl: './login-card.component.html',
     styleUrl: './login-card.component.css'
 })
 export class LoginCardComponent {
+  protected readonly AuthMode = AuthMode;
 }

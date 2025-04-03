@@ -5,14 +5,14 @@
       placeholder="Username"
       id="username"
       ariaLabel="Username"
-      [autocomplete]="AutocompleteType.NICKNAME">
-    </form-text-input>
-    <form-password-input></form-password-input>
+      [autocomplete]="AutocompleteType.NICKNAME"/>
+    <form-password-input
+      [autocomplete]="AutocompleteType.CURRENT_PASSWORD"/>
   </div>
 
   <status-message/>
 
   <div class="mt-3">
-    <form-button label="Login"></form-button>
+    <form-button label="Login"/>
   </div>
 </form>

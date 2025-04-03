@@ -29,6 +29,4 @@ export class FormPasswordInputComponent {
   public togglePasswordVisibility(): void {
     this.isPasswordVisible = !this.isPasswordVisible;
   }
-
-  protected readonly AutocompleteType = AutocompleteType;
 }

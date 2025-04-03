@@ -1,1 +1,7 @@
-<p>register-card works!</p>
+<div
+  class="bg-gray-100/10 w-110 h-auto aspect-square flex flex-col items-center justify-between pt-6 pb-6 mb-21 border-[0.01rem] border-black/15 rounded-3xl backdrop-filter backdrop-blur-3xl shadow-xl shadow-black/25 saturate-120  gap-5">
+  <auth-header/>
+  <auth-subtitle [mode]="AuthMode.REGISTER"/>
+  <register-form/>
+  <auth-cta [mode]="AuthMode.REGISTER"/>
+</div>

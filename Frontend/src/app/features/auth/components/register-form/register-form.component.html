@@ -1,0 +1,36 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <div class="flex flex-col gap-3">
+    <form-text-input
+      icon="phosphorUser"
+      placeholder="First Name"
+      id="username"
+      ariaLabel="Username"
+      [autocomplete]="AutocompleteType.NICKNAME"/>
+    <form-text-input
+      icon="phosphorUser"
+      placeholder="Last Name"
+      id="xd"
+      ariaLabel="XD"
+      [autocomplete]="AutocompleteType.NICKNAME"/>
+    <form-text-input
+      icon="phosphorUser"
+      placeholder="Login"
+      id="xds"
+      ariaLabel="Username"
+      [autocomplete]="AutocompleteType.NICKNAME"/>
+    <form-text-input
+      icon="phosphorUser"
+      placeholder="Email"
+      id="asd"
+      ariaLabel="Username"
+      [autocomplete]="AutocompleteType.NICKNAME"/>
+    <form-password-input
+      [autocomplete]="AutocompleteType.NEW_PASSWORD"/>
+  </div>
+
+  <status-message/>
+
+  <div class="mt-3">
+    <form-button label="Register"/>
+  </div>
+</form>
