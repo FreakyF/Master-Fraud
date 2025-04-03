@@ -3,27 +3,27 @@
     <form-text-input
       icon="phosphorUser"
       placeholder="First Name"
+      id="firstName"
+      ariaLabel="First Name"
+      [autocomplete]="AutocompleteType.GIVEN_NAME"/>
+    <form-text-input
+      icon="phosphorIdentificationCard"
+      placeholder="Last Name"
+      id="lastName"
+      ariaLabel="Last Name"
+      [autocomplete]="AutocompleteType.FAMILY_NAME"/>
+    <form-text-input
+      icon="phosphorAt"
+      placeholder="Username"
       id="username"
       ariaLabel="Username"
       [autocomplete]="AutocompleteType.NICKNAME"/>
     <form-text-input
-      icon="phosphorUser"
-      placeholder="Last Name"
-      id="xd"
-      ariaLabel="XD"
-      [autocomplete]="AutocompleteType.NICKNAME"/>
-    <form-text-input
-      icon="phosphorUser"
-      placeholder="Login"
-      id="xds"
-      ariaLabel="Username"
-      [autocomplete]="AutocompleteType.NICKNAME"/>
-    <form-text-input
-      icon="phosphorUser"
+      icon="phosphorEnvelopeSimple"
       placeholder="Email"
-      id="asd"
-      ariaLabel="Username"
-      [autocomplete]="AutocompleteType.NICKNAME"/>
+      id="email"
+      ariaLabel="Email"
+      [autocomplete]="AutocompleteType.EMAIL"/>
     <form-password-input
       [autocomplete]="AutocompleteType.NEW_PASSWORD"/>
   </div>
