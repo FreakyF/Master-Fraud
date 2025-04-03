@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OtpNet;
 using Guid = System.Guid;
 
@@ -54,31 +55,24 @@ public class AuthController : ControllerBase
 
         if (user != null && user.Password.Secret != loginRequest.Password)
         {
-            var userLoginAttempt = context.UserLoginAttempts.Add(new UserLoginAttempt
-            {
-                Id = Guid.Empty,
-                TimeStamp = DateTime.UtcNow,
-                User = user
-            });
-
-            context.SaveChanges();
-
+            LogLoginAttempt(user);
             return BadRequest();
         }
 
         if (user == null)
         {
-            var userLoginHoneypotAttempt = context.UserLoginHoneypotAttempts.Add(new UserLoginHoneypotAttempt
-            {
-                Id = Guid.Empty,
-                TimeStamp = DateTime.UtcNow,
-                User = loginRequest.Login
-            });
-
-            context.SaveChanges();
-
+            LogLoginAttempt(loginRequest.Login);
             return BadRequest();
         }
+
+        var totpToken = CreateTotpToken(user);
+
+        return Ok(new LoginResponse { TotpToken = totpToken });
+    }
+
+    private Guid CreateTotpToken(User user)
+    {
+        using var context = new AppDbContext();
 
         var totpToken = context.TotpTokens.Add(new TotpToken
         {
@@ -88,7 +82,35 @@ public class AuthController : ControllerBase
 
         context.SaveChanges();
 
-        return Ok(new LoginResponse { TotpToken = totpToken.Entity.Id });
+        return totpToken.Entity.Id;
+    }
+
+    private void LogLoginAttempt(User user)
+    {
+        using var context = new AppDbContext();
+
+        var userLoginAttempt = context.UserLoginAttempts.Add(new UserLoginAttempt
+        {
+            Id = Guid.Empty,
+            TimeStamp = DateTime.UtcNow,
+            User = user
+        });
+
+        context.SaveChanges();
+    }
+
+    private void LogLoginAttempt(string user)
+    {
+        using var context = new AppDbContext();
+
+        var userLoginHoneypotAttempt = context.UserLoginHoneypotAttempts.Add(new UserLoginHoneypotAttempt
+        {
+            Id = Guid.Empty,
+            TimeStamp = DateTime.UtcNow,
+            User = user
+        });
+
+        context.SaveChanges();
     }
 
     private bool IsUserLockedOut(User? user, string honeypotLogin = "")
@@ -100,40 +122,69 @@ public class AuthController : ControllerBase
 
         if (user != null)
         {
-            if (context.UserAccountLocks
-                .Any(l => l.User == user && l.Until > referenceLockTimestamp)) return true;
-
-            if (context.UserLoginAttempts
-                    .Count(a => a.User == user && a.TimeStamp > referenceAttemptTimestamp) < 2) return false;
-
-            var userAccountLocks = context.UserAccountLocks.Add(new UserAccountLock
-            {
-                Id = Guid.Empty,
-                Until = DateTime.UtcNow.AddMinutes(60),
-                User = user
-            });
-
-            context.SaveChanges();
-
+            if (IsUserAccountHasLock(user, referenceLockTimestamp)) return true;
+            if (IsUserAccountHasTooManyAttempts(user, referenceAttemptTimestamp)) return false;
+            LockUserAccount(user);
             return true;
         }
 
-        if (context.UserAccountHoneypotLocks
-            .Any(l => l.User == honeypotLogin && l.Until > referenceLockTimestamp)) return true;
+        if (IsUserAccountHasLock(honeypotLogin, referenceLockTimestamp)) return true;
+        if (IsUserAccountHasTooManyAttempts(honeypotLogin, referenceAttemptTimestamp)) return false;
+        LockUserAccount(honeypotLogin);
+        return true;
+    }
 
-        if (context.UserLoginHoneypotAttempts
-                .Count(a => a.User == honeypotLogin && a.TimeStamp > referenceAttemptTimestamp) < 2) return false;
+    private bool IsUserAccountHasLock(User user, DateTime referenceLockTimestamp)
+    {
+        using var context = new AppDbContext();
+        return context.UserAccountLocks.Any(l => l.User == user && l.Until > referenceLockTimestamp);
+    }
+
+    private bool IsUserAccountHasLock(string user, DateTime referenceLockTimestamp)
+    {
+        using var context = new AppDbContext();
+        return context.UserAccountHoneypotLocks.Any(l => l.User == user && l.Until > referenceLockTimestamp);
+    }
+
+    private bool IsUserAccountHasTooManyAttempts(User user, DateTime referenceAttemptTimestamp)
+    {
+        using var context = new AppDbContext();
+        return context.UserLoginAttempts.Count(a => a.User == user && a.TimeStamp > referenceAttemptTimestamp) < 2;
+    }
+
+    private bool IsUserAccountHasTooManyAttempts(string user, DateTime referenceAttemptTimestamp)
+    {
+        using var context = new AppDbContext();
+        return context.UserLoginHoneypotAttempts.Count(a =>
+            a.User == user && a.TimeStamp > referenceAttemptTimestamp) < 2;
+    }
+
+    private void LockUserAccount(User user)
+    {
+        using var context = new AppDbContext();
+
+        var userAccountLocks = context.UserAccountLocks.Add(new UserAccountLock
+        {
+            Id = Guid.Empty,
+            Until = DateTime.UtcNow.AddMinutes(60),
+            User = user
+        });
+
+        context.SaveChanges();
+    }
+
+    private void LockUserAccount(string user)
+    {
+        using var context = new AppDbContext();
 
         var userAccountHoneypotLocks = context.UserAccountHoneypotLocks.Add(new UserAccountHoneypotLock
         {
             Id = Guid.Empty,
             Until = DateTime.UtcNow.AddMinutes(60),
-            User = honeypotLogin
+            User = user
         });
 
         context.SaveChanges();
-
-        return true;
     }
 
     [HttpPost("totp", Name = "PostTotp")]
@@ -160,18 +211,27 @@ public class AuthController : ControllerBase
 
         if (!isValid) return BadRequest();
 
+        var token = GenerateUserToken(totpToken.User);
+
+        return Ok(new TotpResponse
+        {
+            Token = token
+        });
+    }
+
+    private Guid GenerateUserToken(User user)
+    {
+        using var context = new AppDbContext();
+
         var token = context.UserTokens.Add(new UserToken
         {
             Id = Guid.Empty,
-            User = totpToken.User
+            User = user
         });
 
         context.SaveChanges();
 
-        return Ok(new TotpResponse
-        {
-            Token = token.Entity.Id
-        });
+        return token.Entity.Id;
     }
 
     [HttpPost("logout", Name = "PostLogout")]
@@ -216,35 +276,28 @@ public class AuthController : ControllerBase
             u => u.Login == saltRequest.User
         );
 
-        if (user != null)
-        {
-            return Ok(new SlatResponse
-            {
-                Salt = user.Password.Salt
-            });
-        }
+        if (user != null) return Ok(new SlatResponse { Salt = user.Password.Salt });
+        if (honeypotSalt != null) return Ok(new SlatResponse { Salt = honeypotSalt.Salt });
 
-        if (honeypotSalt != null)
-        {
-            return Ok(new SlatResponse
-            {
-                Salt = honeypotSalt.Salt
-            });
-        }
+        var newHoneypotSalt = CreateHoneypotSalt(saltRequest.User, randomSalt);
+
+        return Ok(new SlatResponse { Salt = newHoneypotSalt });
+    }
+
+    private string CreateHoneypotSalt(string user, string randomSalt)
+    {
+        using var context = new AppDbContext();
 
         var newHoneypotSalt = context.HoneypotSalts.Add(new HoneypotSalt
         {
             Id = Guid.Empty,
-            Login = saltRequest.User,
+            Login = user,
             Salt = randomSalt
         });
 
         context.SaveChanges();
 
-        return Ok(new SlatResponse
-        {
-            Salt = newHoneypotSalt.Entity.Salt
-        });
+        return newHoneypotSalt.Entity.Salt;
     }
 
     [HttpPost("register", Name = "PostRegister")]
