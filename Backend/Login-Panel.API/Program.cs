@@ -6,8 +6,11 @@ namespace Login_Panel.API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
+        var dbContainer = new DockerStarter();
+        await dbContainer.StartPostgresAsync();
+        
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -21,6 +24,9 @@ public class Program
         builder.Services.AddOpenApi();
 
         var app = builder.Build();
+        
+        var databaseUpdater = new DatabaseUpdater(app.Services);
+        await databaseUpdater.PerformDatabaseUpdate();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -35,6 +41,6 @@ public class Program
 
         app.MapControllers();
 
-        app.Run();
+        await app.RunAsync();
     }
 }
