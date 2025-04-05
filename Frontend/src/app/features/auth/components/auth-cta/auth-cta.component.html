@@ -1,10 +1,17 @@
 <div class="flex flex-col items-center justify-center">
-  <ng-container *ngIf="mode === AuthMode.LOGIN">
-    <p class="text-white/90">Are you a new user?</p>
-    <a routerLink="/register" aria-label="Create a new account" class="text-white/90 underline">Create a new account</a>
-  </ng-container>
-  <ng-container *ngIf="mode === AuthMode.REGISTER">
-    <p class="text-white/90">Already have an account?</p>
-    <a routerLink="/login" aria-label="Login to an existing account" class="text-white/90 underline">Log in</a>
-  </ng-container>
+  @switch (mode) {
+    @case (AuthMode.LOGIN) {
+      <p class="text-white/90">Are you a new user?</p>
+      <a routerLink="/register" aria-label="Create a new account"
+         class="text-white/90 underline select-none border-[0.01rem] rounded-md border-transparent focus:outline-none focus-visible:ring focus-visible:ring-white/90 focus-visible:ring-offset-[0.01rem]">Create
+        a new account</a>
+    }
+    @case (AuthMode.REGISTER) {
+      <p class="text-white/90">Already have an account?</p>
+      <a routerLink="/login" aria-label="Login to an existing account"
+         class="text-white/90 underline select-none border-[0.01rem] rounded-md border-transparent focus:outline-none focus-visible:ring focus-visible:ring-white/90 focus-visible:ring-offset-[0.01rem]">Log
+        in</a>
+    }
+  }
 </div>
+
