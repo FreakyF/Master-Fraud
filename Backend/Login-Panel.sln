@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Login-Panel.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Login-Panel.Domain", "Login-Panel.Domain\Login-Panel.Domain.csproj", "{46638355-0436-4123-8A72-07F822481B1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzTest", "FuzzTest\FuzzTest.csproj", "{45616363-C38A-4D01-ACA1-C611982F15AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{46638355-0436-4123-8A72-07F822481B1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46638355-0436-4123-8A72-07F822481B1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46638355-0436-4123-8A72-07F822481B1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45616363-C38A-4D01-ACA1-C611982F15AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45616363-C38A-4D01-ACA1-C611982F15AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45616363-C38A-4D01-ACA1-C611982F15AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45616363-C38A-4D01-ACA1-C611982F15AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

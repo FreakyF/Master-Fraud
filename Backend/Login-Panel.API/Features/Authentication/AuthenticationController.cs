@@ -38,12 +38,6 @@ public class AuthenticationController : ControllerBase
         return await _delayService.FakeDelay(() => _authenticationService.LogoutHandler(logoutRequest));
     }
 
-    [HttpPost("salt", Name = "PostSalt")]
-    public async Task<IActionResult> Salt([FromBody] SaltRequest saltRequest)
-    {
-        return await _delayService.FakeDelay(() => _authenticationService.SaltHandler(saltRequest));
-    }
-
     [HttpPost("register", Name = "PostRegister")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
     {

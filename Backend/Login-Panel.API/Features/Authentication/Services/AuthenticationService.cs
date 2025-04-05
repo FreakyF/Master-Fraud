@@ -31,7 +31,7 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
 
         if (_lockoutService.IsUserLockedOut(user, loginRequest.Login)) return NotFound();
 
-        if (user != null && user.Password.Secret != loginRequest.Password)
+        if (user != null && !BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.Password.Secret))
         {
             _databaseService.LogLoginAttempt(user);
             return BadRequest();
@@ -86,33 +86,14 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
         return Ok();
     }
 
-    public IActionResult SaltHandler(SaltRequest saltRequest)
-    {
-        var randomSalt = BCrypt.Net.BCrypt.GenerateSalt(10);
-
-        var user = _appDbContext.Users.Include(user => user.Password).SingleOrDefault(
-            u => u.Login == saltRequest.User
-        );
-
-        var honeypotSalt = _appDbContext.HoneypotSalts.SingleOrDefault(
-            u => u.Login == saltRequest.User
-        );
-
-        if (user != null) return Ok(new SlatResponse { Salt = user.Password.Salt });
-        if (honeypotSalt != null) return Ok(new SlatResponse { Salt = honeypotSalt.Salt });
-
-        var newHoneypotSalt = _databaseService.CreateHoneypotSalt(saltRequest.User, randomSalt);
-
-        return Ok(new SlatResponse { Salt = newHoneypotSalt });
-    }
-
     public IActionResult RegisterHandler(RegisterRequest registerRequest)
     {
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerRequest.Password);
+
         var password = _appDbContext.Passwords.Add(new Password
         {
             Id = Guid.Empty,
-            Salt = registerRequest.Salt,
-            Secret = registerRequest.Password
+            Secret = hashedPassword
         });
 
         var totp = _appDbContext.Totps.Add(new Totp

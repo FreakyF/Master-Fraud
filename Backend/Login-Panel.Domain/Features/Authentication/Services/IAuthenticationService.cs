@@ -11,7 +11,5 @@ public interface IAuthenticationService
 
     IActionResult LogoutHandler(LogoutRequest logoutRequest);
 
-    IActionResult SaltHandler(SaltRequest saltRequest);
-
     IActionResult RegisterHandler(RegisterRequest registerRequest);
 }

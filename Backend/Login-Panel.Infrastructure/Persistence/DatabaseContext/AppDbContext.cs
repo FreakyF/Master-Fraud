@@ -9,7 +9,6 @@ public class AppDbContext(DbContextOptions dbContextOptions) : DbContext(dbConte
     public DbSet<Totp> Totps { get; set; }
     public DbSet<UserToken> UserTokens { get; set; }
     public DbSet<TotpToken> TotpTokens { get; set; }
-    public DbSet<HoneypotSalt> HoneypotSalts { get; set; }
     public DbSet<UserLoginAttempt> UserLoginAttempts { get; set; }
     public DbSet<UserLoginHoneypotAttempt> UserLoginHoneypotAttempts { get; set; }
     public DbSet<UserAccountLock> UserAccountLocks { get; set; }

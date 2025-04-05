@@ -62,18 +62,4 @@ public class DatabaseService: IDatabaseService
 
         return token.Entity.Id;
     }
-    
-    public string CreateHoneypotSalt(string user, string randomSalt)
-    {
-        var newHoneypotSalt = _appDbContext.HoneypotSalts.Add(new HoneypotSalt
-        {
-            Id = Guid.Empty,
-            Login = user,
-            Salt = randomSalt
-        });
-
-        _appDbContext.SaveChanges();
-
-        return newHoneypotSalt.Entity.Salt;
-    }
 }

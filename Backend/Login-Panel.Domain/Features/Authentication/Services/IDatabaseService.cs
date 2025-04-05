@@ -8,5 +8,4 @@ public interface IDatabaseService
     void LogLoginAttempt(User user);
     void LogLoginAttempt(string user);
     Guid GenerateUserToken(User user);
-    string CreateHoneypotSalt(string user, string randomSalt);
 }
