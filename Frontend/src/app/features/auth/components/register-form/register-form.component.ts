@@ -7,9 +7,10 @@ import {StatusMessageComponent} from '../../../../shared/status-message/status-m
 import {RegisterForm} from '../../../../shared/models/register-form.model';
 import {AutocompleteType} from '../../../../shared/types/autocomplete-type.enum';
 import {RegisterFormControlType} from '../../../../shared/types/register-form-control.enum';
-import {AuthApiService, RegisterRequest} from '../../services/auth-api.service';
-import {PasswordHashingService} from '../../services/password-hashing.service';
+import {AuthApiService} from '../../services/auth-api.service';
 import {firstValueFrom} from 'rxjs';
+import {RegisterRequestDto} from '../../models/register-request-dto.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'register-form',
@@ -27,8 +28,7 @@ import {firstValueFrom} from 'rxjs';
 export class RegisterFormComponent {
   protected readonly form: FormGroup<RegisterForm>;
 
-  constructor(private readonly authApiService: AuthApiService,
-              private readonly passwordHashingService: PasswordHashingService) {
+  constructor(private readonly authApiService: AuthApiService, private readonly router: Router) {
     this.form = new FormGroup<RegisterForm>({
       [RegisterFormControlType.FIRST_NAME]: new FormControl('', {
         nonNullable: true,
@@ -57,26 +57,27 @@ export class RegisterFormComponent {
     if (this.form.invalid) {
       return;
     }
-
-    const {firstName = '', lastName = '', username = '', email = '', password = ''} = this.form.value;
+    const registerData = this.bindRegisterData();
 
     try {
-      const salt = await this.passwordHashingService.generateSalt();
-      // const hashedPassword = await this.passwordHashingService.hashPassword(password, salt);
-
-      const registerData: RegisterRequest = {
-        login: username,
-        password: password,
-        name: firstName,
-        surname: lastName,
-        email: email,
-      };
-
       const response = await firstValueFrom(this.authApiService.register(registerData));
       console.log('Register successful', response);
+      await this.router.navigate(['/totp'], {state: {registrationResponse: response}});
     } catch (error) {
       console.error('Register failed', error);
     }
+  }
+
+  private bindRegisterData() {
+    const {firstName = '', lastName = '', username = '', email = '', password = ''} = this.form.value;
+    const registerData: RegisterRequestDto = {
+      login: username,
+      password: password,
+      name: firstName,
+      surname: lastName,
+      email: email,
+    };
+    return registerData;
   }
 
   protected readonly AutocompleteType = AutocompleteType;

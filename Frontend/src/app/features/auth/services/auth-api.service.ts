@@ -2,24 +2,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../../../environments/environment.development';
+import {RegisterRequestDto} from '../models/register-request-dto.model';
+import {LoginRequestDto} from '../models/login-request-dto.model';
+import {TotpRequestDto} from '../models/totp-request-dto.model';
+import {LoginResponseDto} from '../models/login-response-dto.model';
+import {RegisterResponseDto} from '../models/register-response-dto.model';
+import {TotpResponseDto} from '../models/totp-response-dto.model';
 
-export interface RegisterRequest {
-  login: string;
-  password: string;
-  name: string;
-  surname: string;
-  email: string;
-}
-
-export interface LoginRequest {
-  login: string;
-  password: string;
-}
-
-export interface TotpRequest {
-  totpToken: string;
-  secret: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -30,19 +19,19 @@ export class AuthApiService {
   constructor(private http: HttpClient) {
   }
 
-  register(data: RegisterRequest): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, data);
+  register(data: RegisterRequestDto): Observable<RegisterResponseDto> {
+    return this.http.post<RegisterResponseDto>(`${this.baseUrl}/register`, data);
   }
 
-  login(data: LoginRequest): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, data);
+  login(data: LoginRequestDto): Observable<LoginResponseDto> {
+    return this.http.post<LoginResponseDto>(`${this.baseUrl}/login`, data);
   }
 
-  logout(data: LoginRequest): Observable<void> {
+  verifyTotp(data: TotpRequestDto): Observable<TotpResponseDto> {
+    return this.http.post<TotpResponseDto>(`${this.baseUrl}/totp`, data);
+  }
+
+  logout(data: LoginRequestDto): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/logout`, data);
-  }
-
-  verifyTotp(data: TotpRequest): Observable<any> {
-    return this.http.post(`${this.baseUrl}/totp`, data);
   }
 }

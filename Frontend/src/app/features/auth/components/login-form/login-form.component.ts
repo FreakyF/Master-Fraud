@@ -7,8 +7,9 @@ import {StatusMessageComponent} from '../../../../shared/status-message/status-m
 import {LoginForm} from '../../../../shared/models/login-form.model';
 import {AutocompleteType} from '../../../../shared/types/autocomplete-type.enum';
 import {LoginFormControlType} from '../../../../shared/types/login-form-control.enum';
-import {AuthApiService, LoginRequest} from '../../services/auth-api.service';
+import {AuthApiService} from '../../services/auth-api.service';
 import {firstValueFrom} from 'rxjs';
+import {LoginRequestDto} from '../../models/login-request-dto.model';
 
 @Component({
   selector: 'login-form',
@@ -43,13 +44,7 @@ export class LoginFormComponent {
     if (this.form.invalid) {
       return;
     }
-
-    const {username = '', password = ''} = this.form.value;
-
-    const loginData: LoginRequest = {
-      login: username,
-      password: password
-    };
+    const loginData = this.bindLoginData();
 
     try {
       const response = await firstValueFrom(this.authApiService.login(loginData));
@@ -57,6 +52,16 @@ export class LoginFormComponent {
     } catch (error) {
       console.error('Login failed', error);
     }
+  }
+
+  private bindLoginData() {
+    const {username = '', password = ''} = this.form.value;
+
+    const loginData: LoginRequestDto = {
+      login: username,
+      password: password
+    };
+    return loginData;
   }
 
   protected readonly AutocompleteType = AutocompleteType;
