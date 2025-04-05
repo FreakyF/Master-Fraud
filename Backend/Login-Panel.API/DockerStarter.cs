@@ -16,9 +16,13 @@ public class DockerStarter
 
         var existingContainer = containers.FirstOrDefault(c => c.Names.Any(n => n.TrimStart('/') == "panel-db"));
 
-        if (existingContainer != null && !existingContainer.State.Equals("running", StringComparison.OrdinalIgnoreCase))
+        if (existingContainer != null)
         {
-            await client.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters());
+            if (!existingContainer.State.Equals("running", StringComparison.OrdinalIgnoreCase))
+            {
+                await client.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters());
+            }
+
             return;
         }
 
