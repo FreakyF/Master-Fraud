@@ -50,6 +50,8 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
 
     public IActionResult TotpHandler(TotpRequest totpRequest)
     {
+        var now = DateTime.UtcNow;
+
         var totpToken = _appDbContext.TotpTokens
             .Include(totpTokens => totpTokens.User)
             .ThenInclude(user => user.Totp)
@@ -59,12 +61,19 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
 
         if (totpToken == null) return BadRequest();
 
+        if (totpToken.Until < now)
+        {
+            _appDbContext.TotpTokens.Remove(totpToken);
+            return BadRequest();
+        }
+
         var totp = new OtpNet.Totp(totpToken.User.Totp.Secret);
         var isValid = totp.VerifyTotp(totpRequest.Secret, out _);
 
         if (!isValid) return BadRequest();
 
         var token = _databaseService.GenerateUserToken(totpToken.User);
+        _appDbContext.TotpTokens.Remove(totpToken);
 
         return Ok(new TotpResponse
         {

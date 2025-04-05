@@ -18,7 +18,8 @@ public class DatabaseService: IDatabaseService
         var totpToken = _appDbContext.TotpTokens.Add(new TotpToken
         {
             Id = Guid.Empty,
-            User = user
+            User = user,
+            Until = DateTime.UtcNow.AddMinutes(5)
         });
 
         _appDbContext.SaveChanges();
