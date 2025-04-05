@@ -20,6 +20,7 @@
     "@ng-icons/core": "^31.2.0",
     "@ng-icons/phosphor-icons": "^31.2.0",
     "@tailwindcss/postcss": "^4.0.17",
+    "angularx-qrcode": "^19.0.0",
     "bcryptjs": "^3.0.2",
     "postcss": "^8.5.3",
     "rxjs": "~7.8.0",

@@ -3,7 +3,6 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {AuthCtaComponent} from "../auth-cta/auth-cta.component";
 import {AuthHeaderComponent} from "../auth-header/auth-header.component";
 import {AuthSubtitleComponent} from "../auth-subtitle/auth-subtitle.component";
-import {RegisterFormComponent} from '../register-form/register-form.component';
 import {LoginFormComponent} from '../login-form/login-form.component';
 import {AuthMode} from '../types/auth-mode';
 

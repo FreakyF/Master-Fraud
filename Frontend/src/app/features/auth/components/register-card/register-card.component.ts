@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {AuthCtaComponent} from '../auth-cta/auth-cta.component';
 import {AuthHeaderComponent} from '../auth-header/auth-header.component';
 import {AuthSubtitleComponent} from '../auth-subtitle/auth-subtitle.component';
@@ -11,12 +11,11 @@ import {AuthMode} from '../types/auth-mode';
     AuthCtaComponent,
     AuthHeaderComponent,
     AuthSubtitleComponent,
-    RegisterFormComponent
+    RegisterFormComponent,
   ],
   templateUrl: './register-card.component.html',
   styleUrl: './register-card.component.css'
 })
 export class RegisterCardComponent {
-
   protected readonly AuthMode = AuthMode;
 }
