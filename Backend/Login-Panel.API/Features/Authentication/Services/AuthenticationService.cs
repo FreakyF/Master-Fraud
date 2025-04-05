@@ -113,12 +113,15 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
             Totp = totp.Entity
         });
 
+        var totpToken = _databaseService.CreateTotpToken(user.Entity);
+
         _appDbContext.SaveChanges();
 
         return Ok(new RegisterResponse
         {
             Secret =
-                $"otpauth://totp/Panel:{user.Entity.Login}?secret={Base32Encoding.ToString(totp.Entity.Secret)}&issuer=Panel"
+                $"otpauth://totp/Panel:{user.Entity.Login}?secret={Base32Encoding.ToString(totp.Entity.Secret)}&issuer=Panel",
+            TotpToken = totpToken
         });
     }
 }
