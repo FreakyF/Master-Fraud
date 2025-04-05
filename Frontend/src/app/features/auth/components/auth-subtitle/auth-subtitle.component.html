@@ -1,8 +1,15 @@
 <div class="flex flex-col items-center justify-center">
-  <ng-container *ngIf="mode === AuthMode.LOGIN">
-    <p class="text-xl text-white/90">Please log in</p>
-  </ng-container>
-  <ng-container *ngIf="mode === AuthMode.REGISTER">
-    <p class="text-xl text-white/90">Please register</p>
-  </ng-container>
+  @switch (mode) {
+    @case (AuthMode.LOGIN) {
+      <p class="text-xl text-white/90">Please log in</p>
+
+    }
+    @case (AuthMode.REGISTER) {
+      <p class="text-xl text-white/90">Please register</p>
+
+    }
+    @case (AuthMode.TWO_FACTOR_AUTH) {
+      <p class="text-xl text-white/90">Scan QR code with your authenticator app</p>
+    }
+  }
 </div>

@@ -1,7 +1,7 @@
 import {Component, forwardRef, Input} from '@angular/core';
 import {NgIcon, provideIcons} from '@ng-icons/core';
 import {
-  phosphorAt,
+  phosphorAt, phosphorClockCountdown,
   phosphorEnvelopeSimple,
   phosphorIdentificationCard,
   phosphorUser
@@ -20,7 +20,7 @@ import {AutocompleteType} from '../types/autocomplete-type.enum';
   imports: [
     NgIcon
   ],
-  viewProviders: [provideIcons({phosphorUser, phosphorIdentificationCard, phosphorAt, phosphorEnvelopeSimple}), {
+  viewProviders: [provideIcons({phosphorUser, phosphorIdentificationCard, phosphorAt, phosphorEnvelopeSimple, phosphorClockCountdown}), {
     provide: ControlContainer,
     useExisting: FormGroupDirective
   }],

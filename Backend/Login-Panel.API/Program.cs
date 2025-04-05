@@ -10,11 +10,26 @@ public static class Program
     {
         var dbContainer = new DockerStarter();
         await dbContainer.StartPostgresAsync();
-        
+
         var builder = WebApplication.CreateBuilder(args);
 
+        const string allowSpecificOrigins = "LoginPanelFront";
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(allowSpecificOrigins,
+                policy =>
+                {
+                    policy.WithOrigins("*")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
+
         // Add services to the container.
-        builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Host=localhost;Port=55123;Database=panel;Username=postgres;Password=admin")));
+        builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
+            options.UseNpgsql(
+                builder.Configuration.GetConnectionString(
+                    "Host=localhost;Port=55123;Database=panel;Username=postgres;Password=admin")));
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<ILockoutService, LockoutService>();
         builder.Services.AddScoped<IDatabaseService, DatabaseService>();
@@ -24,7 +39,7 @@ public static class Program
         builder.Services.AddOpenApi();
 
         var app = builder.Build();
-        
+
         var databaseUpdater = new DatabaseUpdater(app.Services);
         await databaseUpdater.PerformDatabaseUpdate();
 
@@ -34,6 +49,8 @@ public static class Program
             app.MapOpenApi();
             app.MapScalarApiReference();
         }
+
+        app.UseCors(allowSpecificOrigins);
 
         app.UseHttpsRedirection();
 
