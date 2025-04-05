@@ -7,13 +7,6 @@ public class DelayService : IDelayService
 {
     private const int TargetMilliseconds = 100;
 
-    private readonly ILogger<DelayService> _logger;
-
-    public DelayService(ILogger<DelayService> logger)
-    {
-        _logger = logger;
-    }
-
     public async Task<IActionResult> FakeDelay(Func<IActionResult> func)
     {
         var stopwatch = Stopwatch.StartNew();

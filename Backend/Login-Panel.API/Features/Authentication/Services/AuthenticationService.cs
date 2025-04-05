@@ -6,44 +6,33 @@ using Totp = Login_Panel.API.Totp;
 
 namespace Login_Panel.Domain.Features.Authentication.Services;
 
-public class AuthenticationService : ControllerBase, IAuthenticationService //TODO: do zmiany ControllerBase
+public class AuthenticationService(
+    AppDbContext appDbContext,
+    ILockoutService lockoutService,
+    IDatabaseService databaseService)
+    : ControllerBase, IAuthenticationService //TODO: do zmiany ControllerBase
 {
-    private readonly ILogger<AuthenticationService> _logger;
-    private readonly AppDbContext _appDbContext;
-    private readonly ILockoutService _lockoutService;
-    private readonly IDatabaseService _databaseService;
-
-    public AuthenticationService(ILogger<AuthenticationService> logger, AppDbContext appDbContext,
-        ILockoutService lockoutService, IDatabaseService databaseService)
-    {
-        _logger = logger;
-        _appDbContext = appDbContext;
-        _lockoutService = lockoutService;
-        _databaseService = databaseService;
-    }
-
-
     public IActionResult LoginHandler(LoginRequest loginRequest)
     {
-        var user = _appDbContext.Users
+        var user = appDbContext.Users
             .Include(user => user.Password)
             .SingleOrDefault(u => u.Login == loginRequest.Login);
 
-        if (_lockoutService.IsUserLockedOut(user, loginRequest.Login)) return NotFound();
+        if (lockoutService.IsUserLockedOut(user, loginRequest.Login)) return NotFound();
 
         if (user != null && !BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.Password.Secret))
         {
-            _databaseService.LogLoginAttempt(user);
+            databaseService.LogLoginAttempt(user);
             return BadRequest();
         }
 
         if (user == null)
         {
-            _databaseService.LogLoginAttempt(loginRequest.Login);
+            databaseService.LogLoginAttempt(loginRequest.Login);
             return BadRequest();
         }
 
-        var totpToken = _databaseService.CreateTotpToken(user);
+        var totpToken = databaseService.CreateTotpToken(user);
 
         return Ok(new LoginResponse { TotpToken = totpToken });
     }
@@ -52,7 +41,7 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
     {
         var now = DateTime.UtcNow;
 
-        var totpToken = _appDbContext.TotpTokens
+        var totpToken = appDbContext.TotpTokens
             .Include(totpTokens => totpTokens.User)
             .ThenInclude(user => user.Totp)
             .SingleOrDefault(
@@ -63,7 +52,7 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
 
         if (totpToken.Until < now)
         {
-            _appDbContext.TotpTokens.Remove(totpToken);
+            appDbContext.TotpTokens.Remove(totpToken);
             return BadRequest();
         }
 
@@ -72,8 +61,8 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
 
         if (!isValid) return BadRequest();
 
-        var token = _databaseService.GenerateUserToken(totpToken.User);
-        _appDbContext.TotpTokens.Remove(totpToken);
+        var token = databaseService.GenerateUserToken(totpToken.User);
+        appDbContext.TotpTokens.Remove(totpToken);
 
         return Ok(new TotpResponse
         {
@@ -85,12 +74,12 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
     {
         if (!Guid.TryParse(logoutRequest.Token, out var token)) return BadRequest();
 
-        var userToken = _appDbContext.UserTokens.SingleOrDefault(t => t.Id == token);
+        var userToken = appDbContext.UserTokens.SingleOrDefault(t => t.Id == token);
 
         if (userToken == null) return BadRequest();
 
-        _appDbContext.UserTokens.Remove(userToken);
-        _appDbContext.SaveChangesAsync();
+        appDbContext.UserTokens.Remove(userToken);
+        appDbContext.SaveChangesAsync();
 
         return Ok();
     }
@@ -99,19 +88,19 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
     {
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerRequest.Password);
 
-        var password = _appDbContext.Passwords.Add(new Password
+        var password = appDbContext.Passwords.Add(new Password
         {
             Id = Guid.Empty,
             Secret = hashedPassword
         });
 
-        var totp = _appDbContext.Totps.Add(new Totp
+        var totp = appDbContext.Totps.Add(new Totp
         {
             Id = Guid.Empty,
             Secret = KeyGeneration.GenerateRandomKey(20)
         });
 
-        var user = _appDbContext.Users.Add(new User
+        var user = appDbContext.Users.Add(new User
         {
             Id = Guid.Empty,
             Email = registerRequest.Email,
@@ -122,9 +111,9 @@ public class AuthenticationService : ControllerBase, IAuthenticationService //TO
             Totp = totp.Entity
         });
 
-        var totpToken = _databaseService.CreateTotpToken(user.Entity);
+        var totpToken = databaseService.CreateTotpToken(user.Entity);
 
-        _appDbContext.SaveChanges();
+        appDbContext.SaveChanges();
 
         return Ok(new RegisterResponse
         {

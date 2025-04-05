@@ -4,7 +4,7 @@ using Scalar.AspNetCore;
 
 namespace Login_Panel.API;
 
-public class Program
+public static class Program
 {
     public static async Task Main(string[] args)
     {
