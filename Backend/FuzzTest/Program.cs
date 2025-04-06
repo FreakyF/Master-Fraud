@@ -20,8 +20,9 @@ public static class Program
         var services = new ServiceCollection();
 
         var dbName = $"FuzzTestDb_{Guid.NewGuid()}";
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseInMemoryDatabase(dbName));
+        // services.AddDbContext<AppDbContext>(options =>
+        //     options.UseInMemoryDatabase(dbName));
+        services.AddDbContext<AppDbContext>();
 
         services.AddScoped<IDatabaseService, DatabaseService>();
         services.AddScoped<ILockoutService, LockoutService>();
