@@ -1,7 +1,8 @@
 import {Component, forwardRef, Input} from '@angular/core';
 import {NgIcon, provideIcons} from '@ng-icons/core';
 import {
-  phosphorAt, phosphorClockCountdown,
+  phosphorAt,
+  phosphorClockCountdown,
   phosphorEnvelopeSimple,
   phosphorIdentificationCard,
   phosphorUser
@@ -20,7 +21,13 @@ import {AutocompleteType} from '../types/autocomplete-type.enum';
   imports: [
     NgIcon
   ],
-  viewProviders: [provideIcons({phosphorUser, phosphorIdentificationCard, phosphorAt, phosphorEnvelopeSimple, phosphorClockCountdown}), {
+  viewProviders: [provideIcons({
+    phosphorUser,
+    phosphorIdentificationCard,
+    phosphorAt,
+    phosphorEnvelopeSimple,
+    phosphorClockCountdown
+  }), {
     provide: ControlContainer,
     useExisting: FormGroupDirective
   }],
@@ -47,12 +54,22 @@ export class FormTextInputComponent implements ControlValueAccessor {
   protected isDisabled: boolean = false;
 
   protected onChange!: (value: string) => void;
+  protected onTouched!: () => void;
+
+  protected get IsInvalid(): boolean {
+    const isInvalid: boolean = this.formControl.invalid;
+    if (!isInvalid) {
+      return false;
+    }
+
+    const isDirty: boolean = this.formControl.dirty;
+    const isTouched: boolean = this.formControl.touched;
+    return isDirty || isTouched;
+  }
 
   public registerOnChange(fn: (value: string) => void): void {
     this.onChange = fn;
   }
-
-  protected onTouched!: () => void;
 
   public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
@@ -72,16 +89,5 @@ export class FormTextInputComponent implements ControlValueAccessor {
 
     this.value = value;
     this.onChange(value);
-  }
-
-  protected get IsInvalid(): boolean {
-    const isInvalid: boolean = this.formControl.invalid;
-    if (!isInvalid) {
-      return false;
-    }
-
-    const isDirty: boolean = this.formControl.dirty;
-    const isTouched: boolean = this.formControl.touched;
-    return isDirty || isTouched;
   }
 }

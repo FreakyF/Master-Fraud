@@ -1,26 +1,21 @@
 import {Injectable} from '@angular/core';
-
-export interface AuthTokenResponse {
-  totpToken?: string;
-  secret?: string;
-  token?: string;
-}
+import {AuthResponseDto} from '../models/auth-response-dto.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InMemoryDataService {
-  private tokenData: AuthTokenResponse = {};
+  private authData: AuthResponseDto = {};
 
-  setTokenData(data: AuthTokenResponse): void {
-    this.tokenData = {...this.tokenData, ...data};
+  setAuthData(data: AuthResponseDto): void {
+    this.authData = {...this.authData, ...data};
   }
 
-  getTokenData(): AuthTokenResponse {
-    return this.tokenData;
+  getAuthData(): AuthResponseDto {
+    return this.authData;
   }
 
-  clearTokenData(): void {
-    this.tokenData = {};
+  clearAuthData(): void {
+    this.authData = {};
   }
 }

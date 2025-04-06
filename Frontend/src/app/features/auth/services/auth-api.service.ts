@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, tap} from 'rxjs';
 import {environment} from '../../../../environments/environment.development';
@@ -9,6 +9,7 @@ import {LoginResponseDto} from '../models/login-response-dto.model';
 import {RegisterResponseDto} from '../models/register-response-dto.model';
 import {TotpResponseDto} from '../models/totp-response-dto.model';
 import {InMemoryDataService} from './in-memory-data.service';
+import {LogoutRequestDto} from '../models/logout-request-dto.model';
 
 
 @Injectable({
@@ -17,14 +18,14 @@ import {InMemoryDataService} from './in-memory-data.service';
 export class AuthApiService {
   private readonly baseUrl = `${environment.apiUrl}auth`;
 
-  constructor(private readonly http: HttpClient, private readonly inMemoryDataService: InMemoryDataService) {
-  }
+  private readonly http = inject(HttpClient);
+  private readonly inMemoryDataService = inject(InMemoryDataService);
 
   register(data: RegisterRequestDto): Observable<RegisterResponseDto> {
     return this.http.post<RegisterResponseDto>(`${this.baseUrl}/register`, data)
       .pipe(
         tap(response => {
-          this.inMemoryDataService.setTokenData(response);
+          this.inMemoryDataService.setAuthData(response);
         })
       );
   }
@@ -33,7 +34,7 @@ export class AuthApiService {
     return this.http.post<LoginResponseDto>(`${this.baseUrl}/login`, data)
       .pipe(
         tap(response => {
-          this.inMemoryDataService.setTokenData(response);
+          this.inMemoryDataService.setAuthData(response);
         })
       );
   }
@@ -43,17 +44,17 @@ export class AuthApiService {
       .pipe(
         tap(response => {
           if (response.token) {
-            this.inMemoryDataService.setTokenData(response);
+            this.inMemoryDataService.setAuthData(response);
           }
         })
       );
   }
 
-  logout(data: LoginRequestDto): Observable<void> {
+  logout(data: LogoutRequestDto): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/logout`, data)
       .pipe(
         tap(() => {
-          this.inMemoryDataService.clearTokenData();
+          this.inMemoryDataService.clearAuthData();
         })
       );
   }

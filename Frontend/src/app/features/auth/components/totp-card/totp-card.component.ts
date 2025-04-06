@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {AuthHeaderComponent} from "../auth-header/auth-header.component";
 import {AuthSubtitleComponent} from "../auth-subtitle/auth-subtitle.component";
 import {AuthMode} from '../types/auth-mode';
@@ -21,16 +21,16 @@ import {phosphorLockOpenLight} from '@ng-icons/phosphor-icons/light';
   viewProviders: [provideIcons({phosphorLockOpenLight}), {
     provide: ControlContainer,
     useExisting: FormGroupDirective
-  }],    templateUrl: './totp-card.component.html',
+  }], templateUrl: './totp-card.component.html',
   styleUrl: './totp-card.component.css'
 })
 export class TotpCardComponent implements OnInit {
   mode!: AuthMode;
   qrData!: string;
   totpToken!: string;
+  protected readonly AuthMode = AuthMode;
 
-  constructor(private readonly inMemoryDataService: InMemoryDataService) {
-  }
+  private readonly inMemoryDataService = inject(InMemoryDataService);
 
   ngOnInit(): void {
     const state = history.state;
@@ -38,10 +38,8 @@ export class TotpCardComponent implements OnInit {
       this.mode = state.mode;
     }
 
-    const tokenData = this.inMemoryDataService.getTokenData();
-    this.qrData = tokenData.secret ?? '';
-    this.totpToken = tokenData.totpToken ?? '';
+    const authData = this.inMemoryDataService.getAuthData();
+    this.qrData = authData.secret ?? '';
+    this.totpToken = authData.totpToken ?? '';
   }
-
-  protected readonly AuthMode = AuthMode;
 }
