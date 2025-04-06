@@ -8,7 +8,10 @@
       <p class="text-xl text-white/90">Please register</p>
 
     }
-    @case (AuthMode.TWO_FACTOR_AUTH) {
+    @case (AuthMode.TWO_FACTOR_AUTH_LOGIN) {
+      <p class="text-xl text-white/90">Enter your verification code</p>
+    }
+    @case (AuthMode.TWO_FACTOR_AUTH_REGISTER) {
       <p class="text-xl text-white/90">Scan QR code with your authenticator app</p>
     }
   }

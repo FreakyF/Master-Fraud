@@ -11,6 +11,7 @@ import {AuthApiService} from '../../services/auth-api.service';
 import {firstValueFrom} from 'rxjs';
 import {RegisterRequestDto} from '../../models/register-request-dto.model';
 import {Router} from '@angular/router';
+import {AuthMode} from '../types/auth-mode';
 
 @Component({
   selector: 'register-form',
@@ -62,7 +63,7 @@ export class RegisterFormComponent {
     try {
       const response = await firstValueFrom(this.authApiService.register(registerData));
       console.log('Register successful', response);
-      await this.router.navigate(['/totp'], {state: {registrationResponse: response}});
+      await this.router.navigate(['/totp'], {state: {mode: AuthMode.TWO_FACTOR_AUTH_REGISTER}});
     } catch (error) {
       console.error('Register failed', error);
     }

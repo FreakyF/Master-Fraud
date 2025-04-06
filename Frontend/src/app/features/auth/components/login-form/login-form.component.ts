@@ -10,6 +10,8 @@ import {LoginFormControlType} from '../../../../shared/types/login-form-control.
 import {AuthApiService} from '../../services/auth-api.service';
 import {firstValueFrom} from 'rxjs';
 import {LoginRequestDto} from '../../models/login-request-dto.model';
+import {Router} from '@angular/router';
+import {AuthMode} from '../types/auth-mode';
 
 @Component({
   selector: 'login-form',
@@ -27,7 +29,7 @@ import {LoginRequestDto} from '../../models/login-request-dto.model';
 export class LoginFormComponent {
   protected readonly form: FormGroup<LoginForm>;
 
-  constructor(private readonly authApiService: AuthApiService) {
+  constructor(private readonly authApiService: AuthApiService, private readonly router: Router) {
     this.form = new FormGroup<LoginForm>({
       [LoginFormControlType.USERNAME]: new FormControl('', {
         nonNullable: true,
@@ -48,6 +50,7 @@ export class LoginFormComponent {
 
     try {
       const response = await firstValueFrom(this.authApiService.login(loginData));
+      await this.router.navigate(['/totp'], {state: {mode: AuthMode.TWO_FACTOR_AUTH_LOGIN}});
       console.log('Login successful', response);
     } catch (error) {
       console.error('Login failed', error);

@@ -1,7 +1,7 @@
 import {Routes} from '@angular/router';
 import {LoginCardComponent} from './features/auth/components/login-card/login-card.component';
 import {RegisterCardComponent} from './features/auth/components/register-card/register-card.component';
-import {TotpCardComponent} from './features/auth/totp-card/totp-card/totp-card.component';
+import {TotpCardComponent} from './features/auth/components/totp-card/totp-card.component';
 import {PageNotFoundComponent} from './shared/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
