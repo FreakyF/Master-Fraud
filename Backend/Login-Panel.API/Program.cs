@@ -26,10 +26,7 @@ public static class Program
         });
 
         // Add services to the container.
-        builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
-            options.UseNpgsql(
-                builder.Configuration.GetConnectionString(
-                    "Host=localhost;Port=55123;Database=panel;Username=postgres;Password=admin")));
+        builder.Services.AddDbContext<IAppDbContext, AppDbContext>();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<ILockoutService, LockoutService>();
         builder.Services.AddScoped<IDatabaseService, DatabaseService>();
@@ -49,7 +46,7 @@ public static class Program
             app.MapOpenApi();
             app.MapScalarApiReference();
         }
-
+        
         app.UseCors(allowSpecificOrigins);
 
         app.UseHttpsRedirection();
