@@ -37,17 +37,26 @@ export type PasswordAutocompleteType =
 export class FormPasswordInputComponent implements ControlValueAccessor {
   @Input({required: true}) public formControl!: FormControl<string | null>;
   @Input() autocomplete: PasswordAutocompleteType = AutocompleteType.OFF;
-
+  public isPasswordVisible: boolean = false;
   protected value: string = '';
   protected isDisabled: boolean = false;
-
   protected onChange!: (value: string) => void;
+  protected onTouched!: () => void;
+
+  protected get IsInvalid(): boolean {
+    const isInvalid: boolean = this.formControl.invalid;
+    if (!isInvalid) {
+      return false;
+    }
+
+    const isDirty: boolean = this.formControl.dirty;
+    const isTouched: boolean = this.formControl.touched;
+    return isDirty || isTouched;
+  }
 
   public registerOnChange(fn: (value: string) => void): void {
     this.onChange = fn;
   }
-
-  protected onTouched!: () => void;
 
   public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
@@ -61,28 +70,15 @@ export class FormPasswordInputComponent implements ControlValueAccessor {
     this.value = value;
   }
 
+  public togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
   protected onInput(event: Event): void {
     const input: HTMLInputElement = event.target as HTMLInputElement;
     const value: string = input.value;
 
     this.value = value;
     this.onChange(value);
-  }
-
-  protected get IsInvalid(): boolean {
-    const isInvalid: boolean = this.formControl.invalid;
-    if (!isInvalid) {
-      return false;
-    }
-
-    const isDirty: boolean = this.formControl.dirty;
-    const isTouched: boolean = this.formControl.touched;
-    return isDirty || isTouched;
-  }
-
-  public isPasswordVisible: boolean = false;
-
-  public togglePasswordVisibility(): void {
-    this.isPasswordVisible = !this.isPasswordVisible;
   }
 }

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {FormButtonComponent} from '../../../../shared/form-button/form-button.component';
 import {FormPasswordInputComponent} from '../../../../shared/form-password-input/form-password-input.component';
 import {FormTextInputComponent} from '../../../../shared/form-text-input/form-text-input.component';
@@ -28,8 +28,13 @@ import {AuthMode} from '../types/auth-mode';
 })
 export class RegisterFormComponent {
   protected readonly form: FormGroup<RegisterForm>;
+  protected readonly AutocompleteType = AutocompleteType;
+  protected readonly RegisterFormControlType = RegisterFormControlType;
 
-  constructor(private readonly authApiService: AuthApiService, private readonly router: Router) {
+  private readonly authApiService = inject(AuthApiService);
+  private readonly router = inject(Router);
+
+  constructor() {
     this.form = new FormGroup<RegisterForm>({
       [RegisterFormControlType.FIRST_NAME]: new FormControl('', {
         nonNullable: true,
@@ -61,8 +66,7 @@ export class RegisterFormComponent {
     const registerData = this.bindRegisterData();
 
     try {
-      const response = await firstValueFrom(this.authApiService.register(registerData));
-      console.log('Register successful', response);
+      await firstValueFrom(this.authApiService.register(registerData));
       await this.router.navigate(['/totp'], {state: {mode: AuthMode.TWO_FACTOR_AUTH_REGISTER}});
     } catch (error) {
       console.error('Register failed', error);
@@ -80,7 +84,4 @@ export class RegisterFormComponent {
     };
     return registerData;
   }
-
-  protected readonly AutocompleteType = AutocompleteType;
-  protected readonly RegisterFormControlType = RegisterFormControlType;
 }

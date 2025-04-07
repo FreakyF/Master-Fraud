@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input, OnDestroy} from '@angular/core';
 import {FormButtonComponent} from '../../../../shared/form-button/form-button.component';
 import {FormTextInputComponent} from '../../../../shared/form-text-input/form-text-input.component';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -9,6 +9,7 @@ import {AuthApiService} from '../../services/auth-api.service';
 import {TwoFactorAuthFormControlType} from '../../../../shared/types/two-factor-auth-form-control.enum';
 import {firstValueFrom} from 'rxjs';
 import {TotpRequestDto} from '../../models/totp-request-dto.model';
+import {InMemoryDataService} from '../../services/in-memory-data.service';
 
 @Component({
   selector: 'totp-form',
@@ -21,11 +22,16 @@ import {TotpRequestDto} from '../../models/totp-request-dto.model';
   templateUrl: './totp-form.component.html',
   styleUrl: './totp-form.component.css'
 })
-export class TotpFormComponent {
+export class TotpFormComponent implements OnDestroy {
   @Input() totpToken!: string;
   protected readonly form: FormGroup<TwoFactorAuthForm>;
+  protected readonly AutocompleteType = AutocompleteType;
+  protected readonly TwoFactorAuthFormControlType = TwoFactorAuthFormControlType;
 
-  constructor(private readonly authApiService: AuthApiService) {
+  private readonly authApiService = inject(AuthApiService);
+  private readonly inMemoryDataService = inject(InMemoryDataService);
+
+  constructor() {
     this.form = new FormGroup<TwoFactorAuthForm>({
       [TwoFactorAuthFormControlType.SECRET]: new FormControl('', {
         nonNullable: true,
@@ -41,8 +47,7 @@ export class TotpFormComponent {
     const totpData = this.bindTotpData();
 
     try {
-      const response = await firstValueFrom(this.authApiService.verifyTotp(totpData));
-      console.log('Totp successful', response);
+      await firstValueFrom(this.authApiService.verifyTotp(totpData));
     } catch (error) {
       console.error('Totp failed', error);
     }
@@ -57,6 +62,7 @@ export class TotpFormComponent {
     return totpData;
   }
 
-  protected readonly AutocompleteType = AutocompleteType;
-  protected readonly TwoFactorAuthFormControlType = TwoFactorAuthFormControlType;
+  ngOnDestroy(): void {
+    this.inMemoryDataService.clearAuthData();
+  }
 }

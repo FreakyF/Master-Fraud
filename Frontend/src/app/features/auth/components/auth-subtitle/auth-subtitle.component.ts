@@ -3,8 +3,7 @@ import {AuthMode} from '../types/auth-mode';
 
 @Component({
   selector: 'auth-subtitle',
-  imports: [
-  ],
+  imports: [],
   templateUrl: './auth-subtitle.component.html',
   styleUrl: './auth-subtitle.component.css'
 })

@@ -7,7 +7,7 @@ import {LoginFormComponent} from '../login-form/login-form.component';
 import {AuthMode} from '../types/auth-mode';
 
 @Component({
-    selector: 'login-card',
+  selector: 'login-card',
   imports: [
     ReactiveFormsModule,
     AuthCtaComponent,
@@ -16,8 +16,8 @@ import {AuthMode} from '../types/auth-mode';
     AuthSubtitleComponent,
     LoginFormComponent,
   ],
-    templateUrl: './login-card.component.html',
-    styleUrl: './login-card.component.css'
+  templateUrl: './login-card.component.html',
+  styleUrl: './login-card.component.css'
 })
 export class LoginCardComponent {
   protected readonly AuthMode = AuthMode;

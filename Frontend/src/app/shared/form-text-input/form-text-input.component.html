@@ -1,16 +1,16 @@
 <div class="flex h-12 items-center border-[0.01rem] rounded-md px-5 border-white/90">
-  <ng-icon color="rgba(255,255,255,0.9)" [name]="icon" aria-hidden="true" class="text-2xl"/>
+  <ng-icon [name]="icon" aria-hidden="true" class="text-2xl" color="rgba(255,255,255,0.9)"/>
   <input
-    type="text"
-    [placeholder]="placeholder"
-    [id]="id"
-    [value]="value"
-    (input)="onInput($event)"
     (blur)="onTouched()"
-    [disabled]="isDisabled"
-    [class.ng-invalid]="IsInvalid"
-    [class.ng-dirty]="IsInvalid"
+    (input)="onInput($event)"
     [attr.aria-label]="ariaLabel"
     [attr.autocomplete]="autocomplete"
-    class="flex-1 focus:outline-none font-[Quicksand] text-2xl px-2 text-white/90 placeholder-white/60 caret-white/90"/>
+    [class.ng-dirty]="IsInvalid"
+    [class.ng-invalid]="IsInvalid"
+    [disabled]="isDisabled"
+    [id]="id"
+    [placeholder]="placeholder"
+    [value]="value"
+    class="flex-1 focus:outline-none font-[Quicksand] text-2xl px-2 text-white/90 placeholder-white/60 caret-white/90"
+    type="text"/>
 </div>

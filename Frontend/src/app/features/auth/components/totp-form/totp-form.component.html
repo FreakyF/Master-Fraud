@@ -1,12 +1,12 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+<form (ngSubmit)="onSubmit()" [formGroup]="form">
   <div class="flex flex-col gap-3">
     <form-text-input
-      icon="phosphorClockCountdown"
-      placeholder="Auth Code"
+      [autocomplete]="AutocompleteType.NICKNAME"
+      [formControl]="form.controls.secret"
       [id]=TwoFactorAuthFormControlType.SECRET
       ariaLabel="AuthCode"
-      [formControl]="form.controls.secret"
-      [autocomplete]="AutocompleteType.NICKNAME"/>
+      icon="phosphorClockCountdown"
+      placeholder="Auth Code"/>
   </div>
 
   <status-message/>

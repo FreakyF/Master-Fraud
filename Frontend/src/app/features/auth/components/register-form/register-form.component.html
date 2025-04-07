@@ -1,36 +1,36 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+<form (ngSubmit)="onSubmit()" [formGroup]="form">
   <div class="flex flex-col gap-3">
     <form-text-input
-      icon="phosphorUser"
-      placeholder="First Name"
+      [autocomplete]="AutocompleteType.GIVEN_NAME"
+      [formControl]="form.controls.firstName"
       [id]="RegisterFormControlType.FIRST_NAME"
       ariaLabel="First Name"
-      [formControl]="form.controls.firstName"
-      [autocomplete]="AutocompleteType.GIVEN_NAME"/>
+      icon="phosphorUser"
+      placeholder="First Name"/>
     <form-text-input
-      icon="phosphorIdentificationCard"
-      placeholder="Last Name"
+      [autocomplete]="AutocompleteType.FAMILY_NAME"
+      [formControl]="form.controls.lastName"
       [id]="RegisterFormControlType.LAST_NAME"
       ariaLabel="Last Name"
-      [formControl]="form.controls.lastName"
-      [autocomplete]="AutocompleteType.FAMILY_NAME"/>
+      icon="phosphorIdentificationCard"
+      placeholder="Last Name"/>
     <form-text-input
-      icon="phosphorAt"
-      placeholder="Username"
+      [autocomplete]="AutocompleteType.NICKNAME"
+      [formControl]="form.controls.username"
       [id]="RegisterFormControlType.USERNAME"
       ariaLabel="Username"
-      [formControl]="form.controls.username"
-      [autocomplete]="AutocompleteType.NICKNAME"/>
+      icon="phosphorAt"
+      placeholder="Username"/>
     <form-text-input
-      icon="phosphorEnvelopeSimple"
-      placeholder="Email"
+      [autocomplete]="AutocompleteType.EMAIL"
+      [formControl]="form.controls.email"
       [id]="RegisterFormControlType.EMAIL"
       ariaLabel="Email"
-      [formControl]="form.controls.email"
-      [autocomplete]="AutocompleteType.EMAIL"/>
+      icon="phosphorEnvelopeSimple"
+      placeholder="Email"/>
     <form-password-input
-      [formControl]="form.controls.password"
-      [autocomplete]="AutocompleteType.NEW_PASSWORD"/>
+      [autocomplete]="AutocompleteType.NEW_PASSWORD"
+      [formControl]="form.controls.password"/>
   </div>
 
   <status-message/>

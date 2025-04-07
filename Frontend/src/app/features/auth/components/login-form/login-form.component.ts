@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {FormButtonComponent} from '../../../../shared/form-button/form-button.component';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {FormPasswordInputComponent} from '../../../../shared/form-password-input/form-password-input.component';
@@ -28,8 +28,13 @@ import {AuthMode} from '../types/auth-mode';
 })
 export class LoginFormComponent {
   protected readonly form: FormGroup<LoginForm>;
+  protected readonly AutocompleteType = AutocompleteType;
+  protected readonly LoginFormControlType = LoginFormControlType;
 
-  constructor(private readonly authApiService: AuthApiService, private readonly router: Router) {
+  private readonly authApiService = inject(AuthApiService);
+  private readonly router = inject(Router);
+
+  constructor() {
     this.form = new FormGroup<LoginForm>({
       [LoginFormControlType.USERNAME]: new FormControl('', {
         nonNullable: true,
@@ -49,9 +54,8 @@ export class LoginFormComponent {
     const loginData = this.bindLoginData();
 
     try {
-      const response = await firstValueFrom(this.authApiService.login(loginData));
+      await firstValueFrom(this.authApiService.login(loginData));
       await this.router.navigate(['/totp'], {state: {mode: AuthMode.TWO_FACTOR_AUTH_LOGIN}});
-      console.log('Login successful', response);
     } catch (error) {
       console.error('Login failed', error);
     }
@@ -66,7 +70,4 @@ export class LoginFormComponent {
     };
     return loginData;
   }
-
-  protected readonly AutocompleteType = AutocompleteType;
-  protected readonly LoginFormControlType = LoginFormControlType;
 }
