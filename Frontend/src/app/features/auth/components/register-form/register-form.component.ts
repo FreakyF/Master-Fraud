@@ -95,9 +95,9 @@ export class RegisterFormComponent {
   private bindRegisterData() {
     const {firstName = '', lastName = '', username = '', email = '', password = ''} = this.form.value;
     const registerData: RegisterRequestDto = {
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      username: username.trim().toLowerCase(),
+      name: firstName.trim(),
+      surname: lastName.trim(),
+      login: username.trim().toLowerCase(),
       email: email.trim().toLowerCase(),
       password: password,
     };

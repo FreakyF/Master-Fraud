@@ -1,7 +1,7 @@
 export interface RegisterRequestDto {
-  username: string;
+  login: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  name: string;
+  surname: string;
   email: string;
 }
