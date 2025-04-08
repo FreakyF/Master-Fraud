@@ -1,27 +1,31 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="form">
   <div class="flex flex-col gap-3">
     <form-text-input
-      [autocomplete]="AutocompleteType.GIVEN_NAME"
+      RestrictFirstName
+      [autocomplete]="AutocompleteType.FIRST_NAME"
       [formControl]="form.controls.firstName"
       [id]="RegisterFormControlType.FIRST_NAME"
       ariaLabel="First Name"
       icon="phosphorUser"
       placeholder="First Name"/>
     <form-text-input
-      [autocomplete]="AutocompleteType.FAMILY_NAME"
+      RestrictLastName
+      [autocomplete]="AutocompleteType.LAST_NAME"
       [formControl]="form.controls.lastName"
       [id]="RegisterFormControlType.LAST_NAME"
       ariaLabel="Last Name"
       icon="phosphorIdentificationCard"
       placeholder="Last Name"/>
     <form-text-input
-      [autocomplete]="AutocompleteType.NICKNAME"
+      RestrictUsername
+      [autocomplete]="AutocompleteType.USERNAME"
       [formControl]="form.controls.username"
       [id]="RegisterFormControlType.USERNAME"
       ariaLabel="Username"
       icon="phosphorAt"
       placeholder="Username"/>
     <form-text-input
+      RestrictEmail
       [autocomplete]="AutocompleteType.EMAIL"
       [formControl]="form.controls.email"
       [id]="RegisterFormControlType.EMAIL"
@@ -29,11 +33,12 @@
       icon="phosphorEnvelopeSimple"
       placeholder="Email"/>
     <form-password-input
+      RestrictPassword
       [autocomplete]="AutocompleteType.NEW_PASSWORD"
       [formControl]="form.controls.password"/>
   </div>
 
-  <status-message/>
+  <status-message [status]="status"/>
 
   <div class="mt-3">
     <form-button label="Register"/>

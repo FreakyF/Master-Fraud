@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {InMemoryDataService} from './in-memory-data.service';
 import {Observable} from 'rxjs';
-import {AuthResponseDto} from '../models/auth-response-dto.model';
+import {AuthResponseDto} from '../models/response/auth-response-dto.model';
 
 @Injectable({
   providedIn: 'root'

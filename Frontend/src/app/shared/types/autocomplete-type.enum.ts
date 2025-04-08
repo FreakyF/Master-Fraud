@@ -1,7 +1,7 @@
 export enum AutocompleteType {
-  GIVEN_NAME = 'given-name',
-  FAMILY_NAME = 'family-name',
-  NICKNAME = 'nickname',
+  FIRST_NAME = 'given-name',
+  LAST_NAME = 'family-name',
+  USERNAME = 'username',
   EMAIL = 'email',
   NEW_PASSWORD = 'new-password',
   CURRENT_PASSWORD = 'current-password',

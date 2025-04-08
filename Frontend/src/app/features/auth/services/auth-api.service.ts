@@ -2,14 +2,14 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, tap} from 'rxjs';
 import {environment} from '../../../../environments/environment.development';
-import {RegisterRequestDto} from '../models/register-request-dto.model';
-import {LoginRequestDto} from '../models/login-request-dto.model';
-import {TotpRequestDto} from '../models/totp-request-dto.model';
-import {LoginResponseDto} from '../models/login-response-dto.model';
-import {RegisterResponseDto} from '../models/register-response-dto.model';
-import {TotpResponseDto} from '../models/totp-response-dto.model';
+import {RegisterRequestDto} from '../models/request/register-request-dto.model';
+import {LoginRequestDto} from '../models/request/login-request-dto.model';
+import {TotpRequestDto} from '../models/request/totp-request-dto.model';
+import {LoginResponseDto} from '../models/response/login-response-dto.model';
+import {RegisterResponseDto} from '../models/response/register-response-dto.model';
+import {TotpResponseDto} from '../models/response/totp-response-dto.model';
 import {InMemoryDataService} from './in-memory-data.service';
-import {LogoutRequestDto} from '../models/logout-request-dto.model';
+import {LogoutRequestDto} from '../models/request/logout-request-dto.model';
 
 
 @Injectable({

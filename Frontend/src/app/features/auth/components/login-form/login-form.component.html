@@ -1,18 +1,20 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="form">
   <div class="flex flex-col gap-3">
     <form-text-input
-      [autocomplete]="AutocompleteType.NICKNAME"
+      RestrictUsername
+      [autocomplete]="AutocompleteType.USERNAME"
       [formControl]="form.controls.username"
       [id]=LoginFormControlType.USERNAME
       ariaLabel="Username"
       icon="phosphorUser"
       placeholder="Username"/>
     <form-password-input
+      RestrictPassword
       [autocomplete]="AutocompleteType.CURRENT_PASSWORD"
       [formControl]="form.controls.password"/>
   </div>
 
-  <status-message/>
+  <status-message [status]="status"/>
 
   <div class="mt-3">
     <form-button label="Login"/>

@@ -19,7 +19,7 @@ import {AutocompleteType} from '../types/autocomplete-type.enum';
 @Component({
   selector: 'form-text-input',
   imports: [
-    NgIcon
+    NgIcon,
   ],
   viewProviders: [provideIcons({
     phosphorUser,
