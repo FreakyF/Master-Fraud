@@ -4,7 +4,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {firstValueFrom} from 'rxjs';
 import {AuthApiService} from '../../../auth/services/auth-api.service';
 import {InMemoryDataService} from '../../../auth/services/in-memory-data.service';
-import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-card',
@@ -19,7 +18,6 @@ import {Router} from '@angular/router';
 export class DashboardCardComponent {
   private readonly authApiService = inject(AuthApiService);
   private readonly inMemoryDataService = inject(InMemoryDataService);
-  private readonly router = inject(Router);
 
   async onSubmit(): Promise<void> {
     const authData = this.inMemoryDataService.getAuthData();

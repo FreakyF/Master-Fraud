@@ -10,7 +10,7 @@ export const dashboardGuard: CanActivateFn = () => {
   const router = inject(Router);
   const authData = inMemoryDataService.getAuthData();
 
-  if (authData.token) {
+  if (authData?.token) {
     return true;
   }
 

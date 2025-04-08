@@ -59,7 +59,7 @@ export class LoginFormComponent {
     const loginData = this.bindLoginData();
 
     try {
-      firstValueFrom(this.authApiService.login(loginData));
+      await firstValueFrom(this.authApiService.login(loginData));
       await this.router.navigate(['/totp'], {state: {mode: AuthMode.TWO_FACTOR_AUTH_LOGIN}});
     } catch (error: any) {
       if (error.status && error.status >= 400 && error.status < 500) {

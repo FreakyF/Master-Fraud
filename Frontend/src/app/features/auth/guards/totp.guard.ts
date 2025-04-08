@@ -9,7 +9,7 @@ export const totpGuard: CanActivateFn = () => {
   const router = inject(Router);
   const authData = inMemoryDataService.getAuthData();
 
-  if (authData?.secret && !authData.token) {
+  if (authData?.totpToken) {
     return true;
   }
 
