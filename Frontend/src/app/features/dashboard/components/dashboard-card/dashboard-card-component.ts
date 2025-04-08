@@ -1,9 +1,9 @@
 import {Component, inject} from '@angular/core';
 import {FormButtonComponent} from '../../../../shared/form-button/form-button.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {firstValueFrom} from 'rxjs';
 import {AuthApiService} from '../../../auth/services/auth-api.service';
 import {InMemoryDataService} from '../../../auth/services/in-memory-data.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-card',
@@ -18,14 +18,14 @@ import {InMemoryDataService} from '../../../auth/services/in-memory-data.service
 export class DashboardCardComponent {
   private readonly authApiService = inject(AuthApiService);
   private readonly inMemoryDataService = inject(InMemoryDataService);
+  private readonly router = inject(Router);
 
   async onSubmit(): Promise<void> {
     const authData = this.inMemoryDataService.getAuthData();
-
-    if (!authData?.token) {
-      return;
+    if (authData?.token) {
+      const logoutRequestDto = {token: authData.token};
+      this.authApiService.logout(logoutRequestDto).subscribe();
     }
-
-    await firstValueFrom(this.authApiService.logout({token: authData.token}));
+    await this.router.navigate(['/login']);
   }
 }
