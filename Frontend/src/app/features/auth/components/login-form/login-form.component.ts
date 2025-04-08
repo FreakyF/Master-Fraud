@@ -59,7 +59,7 @@ export class LoginFormComponent {
     const loginData = this.bindLoginData();
 
     try {
-      await firstValueFrom(this.authApiService.login(loginData));
+      firstValueFrom(this.authApiService.login(loginData));
       await this.router.navigate(['/totp'], {state: {mode: AuthMode.TWO_FACTOR_AUTH_LOGIN}});
     } catch (error: any) {
       if (error.status && error.status >= 400 && error.status < 500) {
@@ -74,7 +74,7 @@ export class LoginFormComponent {
     const {username = '', password = ''} = this.form.value;
 
     const loginData: LoginRequestDto = {
-      username: username.trim().toLowerCase(),
+      login: username.trim().toLowerCase(),
       password: password
     };
     return loginData;

@@ -13,6 +13,7 @@ import {InMemoryDataService} from '../../services/in-memory-data.service';
 import {totpValidator} from '../../validators/totp.validator';
 import {RestrictTotpDirective} from '../../../../shared/directives/restrict/restrict-totp.directive';
 import {FormErrorService} from '../../../../shared/services/form-error.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'totp-form',
@@ -36,6 +37,7 @@ export class TotpFormComponent implements OnDestroy {
   private readonly authApiService = inject(AuthApiService);
   private readonly formErrorService = inject(FormErrorService);
   private readonly inMemoryDataService = inject(InMemoryDataService);
+  private readonly router = inject(Router);
 
   constructor() {
     this.form = new FormGroup<TwoFactorAuthForm>({
@@ -55,6 +57,7 @@ export class TotpFormComponent implements OnDestroy {
 
     try {
       await firstValueFrom(this.authApiService.verifyTotp(totpData));
+      await this.router.navigate(['/dashboard']);
     } catch (error) {
       this.status = "Something went wrong, please try again"
     }
