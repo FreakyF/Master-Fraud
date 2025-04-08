@@ -13,7 +13,6 @@ import {InMemoryDataService} from '../../services/in-memory-data.service';
 import {totpValidator} from '../../validators/totp.validator';
 import {RestrictTotpDirective} from '../../../../shared/directives/restrict/restrict-totp.directive';
 import {FormErrorService} from '../../../../shared/services/form-error.service';
-import {TrimWhitespacesDirective} from '../../../../shared/directives/normalize/trim-whitespaces.directive';
 
 @Component({
   selector: 'totp-form',
@@ -23,7 +22,6 @@ import {TrimWhitespacesDirective} from '../../../../shared/directives/normalize/
     ReactiveFormsModule,
     StatusMessageComponent,
     RestrictTotpDirective,
-    TrimWhitespacesDirective
   ],
   templateUrl: './totp-form.component.html',
   styleUrl: './totp-form.component.css'

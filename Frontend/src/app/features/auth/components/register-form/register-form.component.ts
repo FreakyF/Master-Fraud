@@ -23,8 +23,6 @@ import {RestrictPasswordDirective} from '../../../../shared/directives/restrict/
 import {RestrictUsernameDirective} from '../../../../shared/directives/restrict/restrict-username.directive';
 import {RestrictEmailDirective} from '../../../../shared/directives/restrict/restrict-email.directive';
 import {FormErrorService} from '../../../../shared/services/form-error.service';
-import {TrimWhitespacesDirective} from '../../../../shared/directives/normalize/trim-whitespaces.directive';
-import {ConvertToLowercaseDirective} from '../../../../shared/directives/normalize/convert-to-lowercase.directive';
 
 @Component({
   selector: 'register-form',
@@ -40,8 +38,6 @@ import {ConvertToLowercaseDirective} from '../../../../shared/directives/normali
     RestrictUsernameDirective,
     RestrictPasswordDirective,
     RestrictEmailDirective,
-    TrimWhitespacesDirective,
-    ConvertToLowercaseDirective,
   ],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css'
