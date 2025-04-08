@@ -13,17 +13,18 @@ public static class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
-        const string allowSpecificOrigins = "LoginPanelFront";
+        const string secureCorsPolicy = "SecureCorsPolicy";
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy(allowSpecificOrigins,
-                policy =>
-                {
-                    policy.WithOrigins("*")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+            options.AddPolicy(secureCorsPolicy, policy =>
+            {
+                policy.WithOrigins("http://localhost:4200") 
+                    .WithHeaders("Content-Type", "Authorization", "X-Totp-Token", "X-Secret")
+                    .WithMethods("GET", "POST", "OPTIONS") 
+                    .SetPreflightMaxAge(TimeSpan.FromHours(2));
+            });
         });
+
 
         // Add services to the container.
         builder.Services.AddDbContext<IAppDbContext, AppDbContext>();
@@ -47,7 +48,7 @@ public static class Program
             app.MapScalarApiReference();
         }
         
-        app.UseCors(allowSpecificOrigins);
+        app.UseCors(secureCorsPolicy);
 
         app.UseHttpsRedirection();
 
