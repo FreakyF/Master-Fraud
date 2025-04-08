@@ -15,11 +15,13 @@ import {
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import {AutocompleteType} from '../types/autocomplete-type.enum';
+import {TrimWhitespacesDirective} from '../directives/normalize/trim-whitespaces.directive';
 
 @Component({
   selector: 'form-text-input',
   imports: [
     NgIcon,
+    TrimWhitespacesDirective,
   ],
   viewProviders: [provideIcons({
     phosphorUser,

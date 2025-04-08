@@ -1,6 +1,7 @@
 <div class="flex h-12 items-center border-[0.01rem] rounded-md px-5 border-white/90">
   <ng-icon [name]="icon" aria-hidden="true" class="text-2xl" color="rgba(255,255,255,0.9)"/>
   <input
+    TrimWhitespaces
     (blur)="onTouched()"
     (input)="onInput($event)"
     [attr.aria-label]="ariaLabel"
