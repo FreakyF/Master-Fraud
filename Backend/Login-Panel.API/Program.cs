@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using Login_Panel.Domain.Features.Authentication.Services;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -18,14 +19,26 @@ public static class Program
         {
             options.AddPolicy(secureCorsPolicy, policy =>
             {
-                policy.WithOrigins("http://localhost:4200") 
+                policy.WithOrigins("http://localhost:4200")
                     .WithHeaders("Content-Type", "Authorization", "X-Totp-Token", "X-Secret")
-                    .WithMethods("GET", "POST", "OPTIONS") 
+                    .WithMethods("GET", "POST", "OPTIONS")
                     .SetPreflightMaxAge(TimeSpan.FromHours(2));
             });
         });
 
-
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.Request.Headers.Host.ToString(),
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 100,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueLimit = 0
+                    }));
+        });
+        
         // Add services to the container.
         builder.Services.AddDbContext<IAppDbContext, AppDbContext>();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -38,6 +51,7 @@ public static class Program
 
         var app = builder.Build();
 
+
         var databaseUpdater = new DatabaseUpdater(app.Services);
         await databaseUpdater.PerformDatabaseUpdate();
 
@@ -47,9 +61,11 @@ public static class Program
             app.MapOpenApi();
             app.MapScalarApiReference();
         }
-        
-        app.UseCors(secureCorsPolicy);
 
+        app.UseCors(secureCorsPolicy);
+        
+        app.UseRateLimiter();
+        
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
