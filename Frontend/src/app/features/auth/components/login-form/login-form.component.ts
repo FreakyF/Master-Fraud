@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {FormButtonComponent} from '../../../../shared/form-button/form-button.component';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FormPasswordInputComponent} from '../../../../shared/form-password-input/form-password-input.component';
 import {FormTextInputComponent} from '../../../../shared/form-text-input/form-text-input.component';
 import {StatusMessageComponent} from '../../../../shared/status-message/status-message.component';
@@ -14,6 +14,8 @@ import {Router} from '@angular/router';
 import {AuthMode} from '../types/auth-mode';
 import {RestrictUsernameDirective} from '../../../../shared/directives/restrict/restrict-username.directive';
 import {RestrictPasswordDirective} from '../../../../shared/directives/restrict/restrict-password.directive';
+import {usernameValidator} from '../../validators/username.validator';
+import {passwordValidator} from '../../validators/password.validator';
 
 @Component({
   selector: 'login-form',
@@ -43,11 +45,11 @@ export class LoginFormComponent {
     this.form = new FormGroup<LoginForm>({
       [LoginFormControlType.USERNAME]: new FormControl('', {
         nonNullable: true,
-        validators: Validators.required
+        validators: usernameValidator
       }),
       [LoginFormControlType.PASSWORD]: new FormControl('', {
         nonNullable: true,
-        validators: Validators.required
+        validators: passwordValidator
       }),
     });
   }
