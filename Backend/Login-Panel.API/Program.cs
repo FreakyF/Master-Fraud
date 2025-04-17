@@ -25,6 +25,13 @@ public static class Program
                     .SetPreflightMaxAge(TimeSpan.FromHours(2));
             });
         });
+        
+        builder.Services.AddHsts(options =>
+        {
+            options.MaxAge = TimeSpan.FromDays(365);
+            options.IncludeSubDomains = true;
+            options.Preload = true;
+        });
 
         builder.Services.AddRateLimiter(options =>
         {
@@ -65,6 +72,8 @@ public static class Program
         app.UseCors(secureCorsPolicy);
         
         app.UseRateLimiter();
+        
+        app.UseHsts();
         
         app.UseHttpsRedirection();
 
