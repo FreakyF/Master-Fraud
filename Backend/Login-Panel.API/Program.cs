@@ -2,11 +2,13 @@ using System;
 using System.Threading.RateLimiting;
 using System.Threading.Tasks;
 using FluentValidation;
+using Login_Panel.API.Features.Authentication.Services;
 using Login_Panel.API.Features.Authentication.Validators;
+using Login_Panel.Domain.Features.Authentication.DTOs;
 using Login_Panel.Domain.Features.Authentication.Services;
+using Login_Panel.Infrastructure.Persistence.DatabaseContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
@@ -64,6 +66,7 @@ public static class Program
         builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
         builder.Services.AddScoped<IValidator<LogoutRequest>, LogoutRequestValidator>();
         builder.Services.AddScoped<IValidator<RegisterRequest>, RegisterRequestValidator>();
+        builder.Services.AddScoped<IValidator<TotpRequest>, TotpRequestValidator>();
         
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
