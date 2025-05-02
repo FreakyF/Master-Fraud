@@ -1,4 +1,6 @@
 using System.Threading.RateLimiting;
+using FluentValidation;
+using Login_Panel.API.Features.Authentication.Validators;
 using Login_Panel.Domain.Features.Authentication.Services;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -52,6 +54,9 @@ public static class Program
         builder.Services.AddScoped<ILockoutService, LockoutService>();
         builder.Services.AddScoped<IDatabaseService, DatabaseService>();
         builder.Services.AddScoped<IDelayService, DelayService>();
+        
+        builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
+        
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
