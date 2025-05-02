@@ -63,6 +63,7 @@ public static class Program
         
         builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
         builder.Services.AddScoped<IValidator<LogoutRequest>, LogoutRequestValidator>();
+        builder.Services.AddScoped<IValidator<RegisterRequest>, RegisterRequestValidator>();
         
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
