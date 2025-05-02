@@ -1,4 +1,4 @@
-namespace Login_Panel.API;
+namespace Login_Panel.Domain.Features.Authentication.Entities;
 
 public class UserAccountLock
 {

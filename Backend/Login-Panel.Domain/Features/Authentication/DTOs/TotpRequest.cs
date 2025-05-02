@@ -1,7 +1,7 @@
-namespace Login_Panel.API;
+namespace Login_Panel.Domain.Features.Authentication.DTOs;
 
 public class TotpRequest
 {
-    public Guid TotpToken { get; set; }
-    public string Secret { get; set; }
+    public required Guid TotpToken { get; set; }
+    public required string Secret { get; set; }
 }

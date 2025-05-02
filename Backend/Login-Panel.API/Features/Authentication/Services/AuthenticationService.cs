@@ -1,18 +1,21 @@
 using System;
 using System.Linq;
-using Login_Panel.API;
+using Login_Panel.Domain.Features.Authentication.DTOs;
+using Login_Panel.Domain.Features.Authentication.Entities;
+using Login_Panel.Domain.Features.Authentication.Services;
+using Login_Panel.Infrastructure.Persistence.DatabaseContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OtpNet;
-using Totp = Login_Panel.API.Totp;
+using Totp = Login_Panel.Domain.Features.Authentication.Entities.Totp;
 
-namespace Login_Panel.Domain.Features.Authentication.Services;
+namespace Login_Panel.API.Features.Authentication.Services;
 
 public class AuthenticationService(
     AppDbContext appDbContext,
     ILockoutService lockoutService,
     IDatabaseService databaseService)
-    : ControllerBase, IAuthenticationService //TODO: do zmiany ControllerBase
+    : ControllerBase, IAuthenticationService
 {
     public IActionResult LoginHandler(LoginRequest loginRequest)
     {
@@ -46,8 +49,7 @@ public class AuthenticationService(
         var totpToken = appDbContext.TotpTokens
             .Include(totpTokens => totpTokens.User)
             .ThenInclude(user => user.Totp)
-            .SingleOrDefault(
-                t => t.Id == totpRequest.TotpToken
+            .SingleOrDefault(t => t.Id == totpRequest.TotpToken
             );
 
         if (totpToken == null) return BadRequest();
@@ -74,9 +76,7 @@ public class AuthenticationService(
 
     public IActionResult LogoutHandler(LogoutRequest logoutRequest)
     {
-        if (!Guid.TryParse(logoutRequest.Token, out var token)) return BadRequest();
-
-        var userToken = appDbContext.UserTokens.SingleOrDefault(t => t.Id == token);
+        var userToken = appDbContext.UserTokens.SingleOrDefault(t => t.Id == logoutRequest.Token);
 
         if (userToken == null) return BadRequest();
 

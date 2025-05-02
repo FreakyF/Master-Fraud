@@ -1,7 +1,9 @@
 using System;
-using Login_Panel.API;
+using Login_Panel.Domain.Features.Authentication.Entities;
+using Login_Panel.Domain.Features.Authentication.Services;
+using Login_Panel.Infrastructure.Persistence.DatabaseContext;
 
-namespace Login_Panel.Domain.Features.Authentication.Services;
+namespace Login_Panel.API.Features.Authentication.Services;
 
 public class DatabaseService(AppDbContext appDbContext) : IDatabaseService
 {

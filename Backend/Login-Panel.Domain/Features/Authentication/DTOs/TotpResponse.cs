@@ -1,6 +1,6 @@
-namespace Login_Panel.API;
+namespace Login_Panel.Domain.Features.Authentication.DTOs;
 
 public class TotpResponse
 {
-    public Guid Token { get; set; }
+    public required Guid Token { get; set; }
 }

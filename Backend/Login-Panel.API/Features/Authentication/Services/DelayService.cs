@@ -1,9 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Login_Panel.Domain.Features.Authentication.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Login_Panel.Domain.Features.Authentication.Services;
+namespace Login_Panel.API.Features.Authentication.Services;
 
 public class DelayService : IDelayService
 {

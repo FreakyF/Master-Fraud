@@ -1,6 +1,6 @@
-namespace Login_Panel.API;
+namespace Login_Panel.Domain.Features.Authentication.DTOs;
 
 public class LogoutRequest
 {
-    public string Token { get; set; }
+    public required Guid Token { get; set; }
 }

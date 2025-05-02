@@ -1,4 +1,4 @@
-using Login_Panel.API;
+using Login_Panel.Domain.Features.Authentication.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Login_Panel.Domain.Features.Authentication.Services;

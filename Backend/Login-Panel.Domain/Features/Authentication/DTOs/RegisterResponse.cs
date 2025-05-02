@@ -1,7 +1,7 @@
-namespace Login_Panel.API;
+namespace Login_Panel.Domain.Features.Authentication.DTOs;
 
 public class RegisterResponse
 {
-    public string Secret { get; init; }
-    public Guid TotpToken { get; set; }
+    public required string Secret { get; init; }
+    public required Guid TotpToken { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Login_Panel.Domain.Features.Authentication.DTOs;
 
 namespace Login_Panel.API.Features.Authentication.Validators;
 

@@ -1,6 +1,7 @@
+using Login_Panel.Domain.Features.Authentication.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Login_Panel.API;
+namespace Login_Panel.Infrastructure.Persistence.DatabaseContext;
 
 public interface IAppDbContext: IDisposable
 {

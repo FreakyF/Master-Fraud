@@ -1,9 +1,9 @@
-using System.Diagnostics;
 using System.Threading.Tasks;
+using Login_Panel.Domain.Features.Authentication.DTOs;
 using Login_Panel.Domain.Features.Authentication.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Login_Panel.API.Controllers;
+namespace Login_Panel.API.Features.Authentication;
 
 [ApiController]
 [Route("auth")]
