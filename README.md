@@ -1,4 +1,4 @@
-# 🔐 Master Fraud
+# 🏦 Master Fraud
 
 Security‑first bank authentication panel with streamlined login, registration, and built‑in two‑factor verification.
 
