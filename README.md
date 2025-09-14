@@ -1,5 +1,4 @@
 # 🏦 Master Fraud
-
 Master Fraud is a modern authentication system designed specifically for banking and financial applications, with security as its top priority. It provides a robust login and registration flow protected by multi-layer verification, including two-factor authentication (2FA), ensuring that sensitive user data and transactions remain safe. With its clean and intuitive interface.
 
 ## 📌 Features
