@@ -62,7 +62,6 @@ A production-grade banking login interface engineered with application-level def
 ## 🧪 Quality & Standards
 * **Testing Strategy:**
     * **Backend:** xUnit for domain logic and service-layer validation.
-    * **Frontend:** Jasmine/Karma for component and state-management verification.
 * **Auditability:** Implementation of persistent audit trails for all authentication events, including shadow-locking triggers, to facilitate post-incident forensic analysis.
 * **Engineering Principles:** Strict adherence to Clean Architecture, SOLID, and "Secure by Design" (Default Deny) patterns.
 
